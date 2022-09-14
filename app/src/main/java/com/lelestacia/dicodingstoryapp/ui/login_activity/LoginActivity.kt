@@ -7,9 +7,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.lelestacia.dicodingstoryapp.ui.register_activity.RegisterActivity
 import com.lelestacia.dicodingstoryapp.databinding.ActivityLoginBinding
-import com.lelestacia.dicodingstoryapp.ui.activity.MainActivity
+import com.lelestacia.dicodingstoryapp.ui.register_activity.RegisterActivity
 import com.lelestacia.dicodingstoryapp.ui.stories_activity.StoriesActivity
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.AndroidEntryPoint
