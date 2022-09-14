@@ -7,4 +7,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue">#0000FF</color>
+
+    <!--Light Mode-->
+    <color name="beige">#F5EDDC</color>
+    <color name="grey">#CFD2CF</color>
+    <color name="peach">#FA9494</color>
+    <color name="red">#EB1D36</color>
+
+    <!--Dark Mode-->
+    <color name="second_black">#222831</color>
+    <color name="second_gray">#393E46</color>
+    <color name="teal">#00ADB5</color>
+    <color name="broken_white">#EEEEEE</color>
 </resources>
