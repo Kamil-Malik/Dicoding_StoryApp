@@ -20,6 +20,7 @@ class RegisterViewModel @Inject constructor(
     val registerInformation get() = _registerInformation
 
     fun signUpWithEmailAndPassword(username: String, email: String, password: String) {
+        _registerInformation.postValue(NetworkResponse.Loading)
         viewModelScope.launch(Dispatchers.IO) {
             _registerInformation.postValue(repository.signUpUserWithEmailAndPassword(username, email, password))
         }

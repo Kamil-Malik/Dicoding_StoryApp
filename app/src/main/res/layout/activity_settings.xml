@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    android:padding="16dp"
+    android:padding="24dp"
     tools:context=".ui.settings_activity.SettingsActivity">
 
     <TextView
@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
-        android:text="Dark Mode"
+        android:text="@string/dark_mode"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -35,8 +35,8 @@
         android:id="@+id/btnLogout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Logout"
+        android:layout_marginTop="16dp"
+        android:text="@string/logout"
         android:textColor="@color/white"
         app:backgroundTint="@color/red"
         app:layout_constraintEnd_toEndOf="@id/switchDarkmode"

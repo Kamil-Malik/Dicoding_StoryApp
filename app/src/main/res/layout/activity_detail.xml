@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    android:padding="15dp"
+    android:padding="24dp"
     tools:context=".ui.detail_activity.DetailActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -25,7 +25,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/sen_bold"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="15sp"
@@ -38,7 +38,7 @@
         android:id="@+id/tvTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +49,7 @@
         android:id="@+id/tvDeskripsi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:textAlignment="center"
         android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintEnd_toEndOf="parent"

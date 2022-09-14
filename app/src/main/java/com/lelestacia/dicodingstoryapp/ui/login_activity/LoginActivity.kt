@@ -1,12 +1,15 @@
 package com.lelestacia.dicodingstoryapp.ui.login_activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.ActivityLoginBinding
 import com.lelestacia.dicodingstoryapp.ui.register_activity.RegisterActivity
 import com.lelestacia.dicodingstoryapp.ui.stories_activity.StoriesActivity
@@ -26,27 +29,60 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         _binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         supportActionBar?.hide()
+        subscribe()
+        binding.btnLogin.setOnClickListener(this)
+    }
+
+    private fun subscribe() {
+        viewModel.loginInfo.observe(this) {
+            when (it) {
+                is NetworkResponse.Loading -> {
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                        .hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+                    binding.layoutLoading.root.visibility = View.VISIBLE
+                    binding.btnLogin.visibility = View.GONE
+                }
+                is NetworkResponse.Success -> return@observe
+                else -> {
+                    binding.btnLogin.visibility = View.VISIBLE
+                    binding.layoutLoading.root.visibility = View.GONE
+                }
+            }
+        }
 
         viewModel.loginInfo.observe(this) { login ->
             when (login) {
                 is NetworkResponse.GenericException -> Toast.makeText(
-                    this, "Error ${login.code} " +
-                            ": ${login.cause}", Toast.LENGTH_SHORT
-                )
-                    .show()
-                NetworkResponse.Loading -> return@observe
-                NetworkResponse.NetworkException -> Toast.makeText(
                     this,
-                    "Silahkan periksa koneksi anda",
+                    resources.getString(R.string.error_message, login.code, login.cause),
                     Toast.LENGTH_SHORT
                 )
                     .show()
-                NetworkResponse.None -> return@observe
-                is NetworkResponse.Success -> if (!login.data.error)
-                    startActivity(Intent(this, StoriesActivity::class.java))
+                is NetworkResponse.NetworkException -> Toast.makeText(
+                    this,
+                    resources.getString(R.string.error_network),
+                    Toast.LENGTH_SHORT
+                ).show()
+                is NetworkResponse.Success -> {
+                    if (!login.data.error)
+                        startActivity(Intent(this, StoriesActivity::class.java))
+                    else
+                        Toast.makeText(this, login.data.message, Toast.LENGTH_SHORT).show()
+                }
+                else -> return@observe
             }
         }
-        binding.btnLogin.setOnClickListener(this)
+    }
+
+    private fun checkIsValid(email: String, password: String) {
+        if (email.isEmpty())
+            binding.edtEmail.error = resources.getString(R.string.empty_email)
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            binding.edtEmail.error = resources.getString(R.string.invalid_email)
+        if (password.isEmpty() || password.length < 6)
+            binding.edtPassword.error = resources.getString(R.string.empty_password)
+        else
+            viewModel.signInWithEmailAndPassword(email, password)
     }
 
     override fun onClick(v: View?) {
@@ -58,16 +94,5 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             binding.btnLogin.id -> checkIsValid(email, password)
             binding.tvRegister.id -> startActivity(Intent(this, RegisterActivity::class.java))
         }
-    }
-
-    private fun checkIsValid(email: String, password: String) {
-        if (email.isEmpty())
-            binding.edtEmail.error = "Email tidak boleh kosong"
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            binding.edtEmail.error = "Silahkan masukkan email yang valid"
-        if (password.isEmpty() || password.length < 6)
-            binding.edtPassword.error = "Password tidak boleh kosong"
-        else
-            viewModel.signInWithEmailAndPassword(email, password)
     }
 }

@@ -21,6 +21,7 @@ class DetailActivity : AppCompatActivity() {
         Glide.with(this).load(story?.photoUrl).fitCenter().into(binding.ivPhoto)
         binding.tvTitle.text = story?.name
         val newTimeStamp = story?.createdAt?.replace("T", " - ")
+        newTimeStamp?.removePrefix("Z")
         binding.tvTimestamp.text = newTimeStamp
         binding.tvDeskripsi.text = story?.description
     }

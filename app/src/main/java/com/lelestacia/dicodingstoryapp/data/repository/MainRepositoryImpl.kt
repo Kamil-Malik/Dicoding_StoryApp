@@ -31,7 +31,7 @@ class MainRepositoryImpl @Inject constructor(
                 is HttpException -> {
                     NetworkResponse.GenericException(
                         t.code(),
-                        convertErrorBody(t)?.message
+                        t.message()
                     )
                 }
                 else -> NetworkResponse.GenericException(null, t.message)
@@ -60,7 +60,7 @@ class MainRepositoryImpl @Inject constructor(
                 is HttpException -> {
                     NetworkResponse.GenericException(
                         t.code(),
-                        convertErrorBody(t)?.message
+                        t.message()
                     )
                 }
                 else -> NetworkResponse.GenericException(null, t.message)
@@ -79,7 +79,7 @@ class MainRepositoryImpl @Inject constructor(
                 is HttpException -> {
                     NetworkResponse.GenericException(
                         t.code(),
-                        convertErrorBody(t)?.message
+                        t.message()
                     )
                 }
                 else -> NetworkResponse.GenericException(null, t.message)

@@ -21,6 +21,7 @@ class LoginViewModel @Inject constructor(
     val loginInfo: LiveData<NetworkResponse<LoginResponse>> get() = _loginInfo
 
     fun signInWithEmailAndPassword(email: String, password: String) {
+        _loginInfo.value = NetworkResponse.Loading
         viewModelScope.launch(Dispatchers.IO) {
             _loginInfo.postValue(
                 repository.signInWithEmailAndPassword(
