@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".ui.login_activity.LoginActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:padding="25dp">
+
+        <TextView
+            android:id="@+id/tvBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="55dp"
+            android:fontFamily="@font/sen_extrabold"
+            android:text="LOGIN"
+            android:textAlignment="center"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSubbanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/sen"
+            android:text="Please Login to Continue"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvBanner" />
+
+        <com.lelestacia.dicodingstoryapp.ui.design.CustomEditText
+            android:id="@+id/edtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/form_background"
+            android:drawableStart="@drawable/ic_outline_email"
+            android:drawablePadding="10dp"
+            android:drawableTint="?android:attr/textColorPrimary"
+            android:fontFamily="@font/sen"
+            android:hint="Please Input Your Email"
+            android:inputType="textEmailAddress"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textColorHint="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvSubbanner" />
+
+        <com.lelestacia.dicodingstoryapp.ui.design.CustomEditText
+            android:id="@+id/edtPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/form_background"
+            android:drawableStart="@drawable/ic_outline_lock"
+            android:drawablePadding="10dp"
+            android:drawableTint="?android:attr/textColorPrimary"
+            android:fontFamily="@font/sen"
+            android:hint="Please input your password"
+            android:inputType="textPassword"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textColorHint="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edtEmail" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/sen_bold"
+            android:paddingStart="25dp"
+            android:paddingTop="15dp"
+            android:paddingEnd="25dp"
+            android:paddingBottom="15dp"
+            android:text="LOGIN"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:backgroundTint="@color/red"
+            app:cornerRadius="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/edtPassword" />
+
+        <TextView
+            android:id="@+id/tvHasNoAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="40dp"
+            android:text="Belum memiliki akun?"
+            android:textColor="?android:attr/textColorPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/btnLogin"
+            app:layout_constraintStart_toStartOf="@+id/btnLogin"
+            app:layout_constraintTop_toBottomOf="@id/btnLogin" />
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="Daftar"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="italic|bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tvHasNoAccount"
+            app:layout_constraintStart_toEndOf="@+id/tvHasNoAccount"
+            app:layout_constraintTop_toTopOf="@+id/tvHasNoAccount" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

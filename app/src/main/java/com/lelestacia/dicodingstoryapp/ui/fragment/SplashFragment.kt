@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import com.lelestacia.dicodingstoryapp.application.MyApp
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.FragmentSplashBinding
+import com.lelestacia.dicodingstoryapp.utility.Utility
 import kotlinx.coroutines.delay
 
 
@@ -33,8 +34,8 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPref =
-            requireActivity().getSharedPreferences(MyApp.USER_PREF, Context.MODE_PRIVATE)
-        val token = sharedPref.getString(MyApp.USER_TOKEN, "") as String
+            requireActivity().getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
+        val token = sharedPref.getString(Utility.USER_TOKEN, "") as String
         lifecycleScope.launchWhenCreated {
             delay(2000)
             if (token.isEmpty())

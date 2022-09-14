@@ -108,7 +108,7 @@
         <action
             android:id="@+id/logout"
             app:destination="@id/loginFragment"
-            app:popUpTo="@id/main_navigation"
+            app:popUpTo="@id/registerFragment"
             app:popUpToInclusive="true" />
     </fragment>
 </navigation>

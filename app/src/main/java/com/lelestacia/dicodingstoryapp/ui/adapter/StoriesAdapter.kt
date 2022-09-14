@@ -1,5 +1,6 @@
 package com.lelestacia.dicodingstoryapp.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.lelestacia.dicodingstoryapp.data.model.Story
 import com.lelestacia.dicodingstoryapp.databinding.StoryItemBinding
+import com.lelestacia.dicodingstoryapp.ui.detail_activity.DetailActivity
 import com.lelestacia.dicodingstoryapp.ui.fragment.MainFragmentDirections
+import com.lelestacia.dicodingstoryapp.utility.Utility
 
 class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComparator()) {
 
@@ -21,7 +24,11 @@ class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComp
             binding.tvTitle.text = item.name
 
             binding.root.setOnClickListener {
-                it.findNavController().navigate(MainFragmentDirections.mainToDetail(item))
+                with(itemView.context) {
+                    startActivity(Intent(this, DetailActivity::class.java).putExtra(
+                        Utility.STORY, item
+                    ))
+                }
             }
         }
     }

@@ -5,9 +5,18 @@
       <map>
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/drawable/form_background.xml" value="0.1675" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/drawable/stories_background.xml" value="0.1" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout-land/activity_detail.xml" value="0.19635416666666666" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout-land/activity_login.xml" value="0.25" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout-land/fragment_detail.xml" value="0.33" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout-land/fragment_login.xml" value="0.21" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_detail.xml" value="0.33" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_detail2.xml" value="0.15384615384615385" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_login.xml" value="0.1423076923076923" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_register.xml" value="0.1423076923076923" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_settings.xml" value="0.1" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_splash.xml" value="0.15384615384615385" />
+        <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/activity_stories.xml" value="0.15384615384615385" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/fragment_add_story.xml" value="0.33" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/fragment_detail.xml" value="0.33" />
         <entry key="..\:/Users/kamil/AndroidStudioProjects/DicodingStoryApp/app/src/main/res/layout/fragment_login.xml" value="0.25" />

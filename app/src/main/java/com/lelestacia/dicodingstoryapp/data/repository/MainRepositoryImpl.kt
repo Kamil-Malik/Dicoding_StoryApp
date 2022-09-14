@@ -6,8 +6,8 @@ import com.lelestacia.dicodingstoryapp.data.api.DicodingApi
 import com.lelestacia.dicodingstoryapp.data.model.AddStoryAndRegisterResponse
 import com.lelestacia.dicodingstoryapp.data.model.GetStoriesResponse
 import com.lelestacia.dicodingstoryapp.data.model.LoginResponse
-import com.lelestacia.dicodingstoryapp.ui.activity.MainActivity
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import com.lelestacia.dicodingstoryapp.utility.Utility
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -46,11 +46,11 @@ class MainRepositoryImpl @Inject constructor(
         return try {
             val response = api.signInWithEmailAndPassword(email, password)
             if (!response.error)
-                context.getSharedPreferences(MainActivity.USER_PREF, Context.MODE_PRIVATE)
+                context.getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
                     .edit().also {
-                        it.putString(MainActivity.USER_TOKEN, response.loginResult.token)
-                        it.putString(MainActivity.USER_ID, response.loginResult.userId)
-                        it.putString(MainActivity.USERNAME, response.loginResult.name)
+                        it.putString(Utility.USER_TOKEN, response.loginResult.token)
+                        it.putString(Utility.USER_ID, response.loginResult.userId)
+                        it.putString(Utility.USERNAME, response.loginResult.name)
                         it.apply()
                     }
             NetworkResponse.Success(response)
@@ -70,8 +70,8 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun getAllStories(): NetworkResponse<GetStoriesResponse> {
         return try {
-            val token = "Bearer ${context.getSharedPreferences(MainActivity.USER_PREF, Context.MODE_PRIVATE)
-                .getString(MainActivity.USER_TOKEN, "")}"
+            val token = "Bearer ${context.getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
+                .getString(Utility.USER_TOKEN, "")}"
             NetworkResponse.Success(api.getStories(token))
         } catch (t: Throwable) {
             when (t) {

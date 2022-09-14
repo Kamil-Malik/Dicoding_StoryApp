@@ -17,6 +17,7 @@ import com.lelestacia.dicodingstoryapp.databinding.FragmentLoginBinding
 import com.lelestacia.dicodingstoryapp.ui.activity.MainActivity
 import com.lelestacia.dicodingstoryapp.ui.viewmodel.MainViewModel
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import com.lelestacia.dicodingstoryapp.utility.Utility
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -74,12 +75,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 NetworkResponse.NetworkException -> Toast.makeText(context, "Please check your internet", Toast.LENGTH_SHORT)
                     .show()
                 is NetworkResponse.Success -> {
-                    val sharedPref = requireActivity().getSharedPreferences(MainActivity.USER_PREF, Context.MODE_PRIVATE)
+                    val sharedPref = requireActivity().getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         with(loginInformation.data.loginResult) {
-                            putString(MainActivity.USERNAME, this.name)
-                            putString(MainActivity.USER_ID, this.userId)
-                            putString(MainActivity.USER_TOKEN, this.token)
+                            putString(Utility.USERNAME, this.name)
+                            putString(Utility.USER_ID, this.userId)
+                            putString(Utility.USER_TOKEN, this.token)
                         }
                         apply()
                     }

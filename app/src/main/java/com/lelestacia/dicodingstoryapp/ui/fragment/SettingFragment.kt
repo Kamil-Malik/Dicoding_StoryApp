@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.FragmentSettingBinding
-import com.lelestacia.dicodingstoryapp.ui.activity.MainActivity
+import com.lelestacia.dicodingstoryapp.utility.Utility
 
 class SettingFragment : Fragment() {
 
@@ -29,22 +29,22 @@ class SettingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPref =
-            requireActivity().getSharedPreferences(MainActivity.USER_PREF, Context.MODE_PRIVATE)
-        binding.switchDarkmode.isChecked = sharedPref.getBoolean(MainActivity.DARK_MODE, false)
+            requireActivity().getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
+        binding.switchDarkmode.isChecked = sharedPref.getBoolean(Utility.DARK_MODE, false)
         binding.switchDarkmode.setOnCheckedChangeListener { _, dark_mode ->
             if (dark_mode)
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            sharedPref.edit().putBoolean(MainActivity.DARK_MODE, dark_mode).apply()
+            sharedPref.edit().putBoolean(Utility.DARK_MODE, dark_mode).apply()
         }
 
         binding.btnLogout.setOnClickListener {
             with(sharedPref.edit()) {
-                this.putString(MainActivity.USER_TOKEN, "")
-                this.putString(MainActivity.USER_ID, "")
-                this.putString(MainActivity.USERNAME, "")
+                this.putString(Utility.USER_TOKEN, "")
+                this.putString(Utility.USER_ID, "")
+                this.putString(Utility.USERNAME, "")
                 apply()
             }
             view.findNavController().navigate(R.id.logout)
