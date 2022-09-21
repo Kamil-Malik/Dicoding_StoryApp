@@ -9,12 +9,11 @@
     tools:context=".ui.detail_activity.DetailActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        app:civ_border_width="1dp"
-        app:civ_border_color="?android:attr/textColorPrimary"
         android:id="@+id/ivPhoto"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_marginTop="55dp"
+        android:transitionName="@string/transition_photo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,6 +28,7 @@
         android:fontFamily="@font/sen_bold"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="15sp"
+        android:transitionName="@string/transition_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivPhoto"
@@ -52,6 +52,7 @@
         android:layout_marginTop="16dp"
         android:textAlignment="center"
         android:textColor="?android:attr/textColorPrimary"
+        android:transitionName="@string/transition_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTimestamp"

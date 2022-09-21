@@ -1,11 +1,16 @@
 package com.lelestacia.dicodingstoryapp.ui.register_activity
 
-import android.os.Bundle
-import android.view.View
+ import android.os.Bundle
+ import android.text.Editable
+ import android.text.TextWatcher
+ import android.util.Patterns
+ import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.ActivityRegisterBinding
+import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,8 +25,79 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         _binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.tvLogin.setOnClickListener(this)
-        binding.btnRegister.setOnClickListener(this)
+        supportActionBar?.hide()
+        subscribe()
+        binding.apply {
+            tvLogin.setOnClickListener(this@RegisterActivity)
+            btnRegister.setOnClickListener(this@RegisterActivity)
+            btnRegister.isEnabled = false
+
+            edtPassword.addTextChangedListener(object : TextWatcher{
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                    return
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    when {
+                        (s?.length ?: 0) >= 6 -> btnRegister.isEnabled = true
+                        else -> {
+                            btnRegister.isEnabled = false
+                            edtPassword.error = resources.getString(R.string.empty_password)
+                        }
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    return
+                }
+
+            })
+        }
+    }
+
+    private fun subscribe() {
+        viewModel.registerInformation.observe(this) { registerStatus ->
+            when (registerStatus) {
+                is NetworkResponse.GenericException -> Toast.makeText(
+                    this,
+                    resources.getString(
+                        R.string.error_message,
+                        registerStatus.code,
+                        registerStatus.cause
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+                NetworkResponse.NetworkException -> Toast.makeText(
+                    this,
+                    resources.getString(R.string.error_network),
+                    Toast.LENGTH_SHORT
+                ).show()
+                is NetworkResponse.Success -> Toast.makeText(
+                    this,
+                    registerStatus.data.message,
+                    Toast.LENGTH_SHORT
+                ).show()
+                else -> return@observe
+            }
+        }
+
+        viewModel.registerInformation.observe(this) {
+            when (it) {
+                NetworkResponse.Loading -> binding.apply {
+                    layoutLoading.root.visibility = View.VISIBLE
+                    btnRegister.visibility = View.GONE
+                }
+                else -> binding.apply {
+                    layoutLoading.root.visibility = View.GONE
+                    btnRegister.visibility = View.VISIBLE
+                }
+            }
+        }
     }
 
     private fun registerAccount() {
@@ -29,17 +105,12 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         val email = binding.edtEmail.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
 
-        if (username.isEmpty())
-            binding.edtUsername.error = resources.getString(R.string.empty_username)
-        if (email.isEmpty())
-            binding.edtEmail.error = resources.getString(R.string.empty_email)
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
-            binding.edtEmail.error = resources.getString(R.string.invalid_email)
-        if (password.length < 6 || password.isEmpty())
-            binding.edtPassword.error = resources.getString(R.string.empty_password)
-        if (username.isNotEmpty() && email.isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS
-                .matcher(email).matches() && password.length < 6)
-            viewModel.signUpWithEmailAndPassword(username,email, password)
+        when {
+            username.isEmpty() ->  binding.edtUsername.error = resources.getString(R.string.empty_username)
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
+                binding.edtEmail.error = resources.getString(R.string.invalid_email)
+            else -> viewModel.signUpWithEmailAndPassword(username, email, password)
+        }
     }
 
     override fun onClick(v: View?) {
@@ -47,11 +118,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
             binding.tvLogin.id -> onBackPressed()
             binding.btnRegister.id -> registerAccount()
         }
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
     }
 
     override fun onDestroy() {

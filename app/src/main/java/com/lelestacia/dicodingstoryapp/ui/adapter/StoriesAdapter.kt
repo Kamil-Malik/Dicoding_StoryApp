@@ -1,8 +1,11 @@
 package com.lelestacia.dicodingstoryapp.ui.adapter
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.util.Pair
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,16 +21,26 @@ class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComp
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Story) {
-            Glide.with(binding.root.context).load(item.photoUrl).into(binding.ivPhoto)
-            binding.tvTitle.text = item.name
-
-            binding.root.setOnClickListener {
-                with(itemView.context) {
-                    startActivity(
-                        Intent(this, DetailActivity::class.java).putExtra(
-                            Utility.STORY, item
+            binding.apply {
+                Glide.with(this.root.context)
+                    .load(item.photoUrl)
+                    .fitCenter()
+                    .into(ivPhoto)
+                tvTitle.text = item.name
+                tvSubtitle.text = item.description
+                this.root.setOnClickListener {
+                    with(it.context) {
+                        startActivity(
+                            Intent(this, DetailActivity::class.java)
+                                .putExtra(Utility.STORY, item),
+                            ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                this as Activity,
+                                Pair(binding.ivPhoto, "transition_photo"),
+                                Pair(binding.tvTitle, "transition_title"),
+                                Pair(binding.tvSubtitle, "transition_description")
+                            ).toBundle()
                         )
-                    )
+                    }
                 }
             }
         }

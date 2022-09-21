@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.lelestacia.dicodingstoryapp"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -34,12 +34,14 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
-
-    //noinspection GradleDependency
-    implementation 'androidx.core:core-ktx:1.8.0'
+    def camerax_version = "1.2.0-beta01"
+    implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -51,10 +53,7 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.43.1'
     kapt 'com.google.dagger:hilt-compiler:2.43'
 
-    //Viewpager2
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
-
-    //Viewmodel
+    //ViewModel
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.activity:activity-ktx:1.5.1'
@@ -71,5 +70,11 @@ dependencies {
     //Circle Imageview
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    //Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
+
+    //Camera X
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
 }

@@ -7,7 +7,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
 
-interface DicodingApi {
+interface DicodingAPI {
 
     @FormUrlEncoded
     @POST("register")
@@ -32,16 +32,8 @@ interface DicodingApi {
     @Multipart
     @POST("stories")
     suspend fun addStory(
-        @Part("file") file: MultipartBody.Part,
+        @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,
         @Header("Authorization") token: String
     ): AddStoryAndRegisterResponse
-
-    /*
-        TODO :
-            1. Cari cara input file dengan ekstensi image
-            2. Cari cara include file tersebut sebagai parameter
-            3. Cari cara membuat function untuk uplaod dengan body form-data
-            4. Cari cara upload
-     */
 }

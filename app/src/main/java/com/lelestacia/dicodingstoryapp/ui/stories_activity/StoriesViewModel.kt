@@ -27,4 +27,6 @@ class StoriesViewModel @Inject constructor(
             _stories.postValue(repository.getAllStories())
         }
     }
+
+    fun isUpdated() = repository.isUpdated()
 }

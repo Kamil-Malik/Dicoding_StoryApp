@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Dicoding Story App</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="login">Masuk</string>
-    <string name="please_login_to_continue">Silahkan masuk untuk melanjutkan</string>
-    <string name="please_input_your_email">Silahkan masukkan email anda</string>
-    <string name="please_input_your_password">Silahkan masukkan password anda</string>
     <string name="have_no_account">Belum memiliki akun?</string>
-    <string name="register">Daftar</string>
-    <string name="please_register_to_continue">Silahkan mendaftar untuk melanjutkan</string>
-    <string name="please_input_your_username">Silahkan masukkan nama anda</string>
     <string name="already_have_an_account">Sudah memiliki akun?</string>
-    <string name="dark_mode">Mode Gelap</string>
-    <string name="camera">Kamera</string>
-    <string name="gallery">Galeri</string>
     <string name="upload_photo">Unggah Foto</string>
     <string name="insert_description">Masukkan Deskripsi</string>
     <string name="welcome_message">Selamat Datang %1$d</string>
     <string name="uploaded_at">Diunggah pada %1$s</string>
+    <string name="choose_picture">Silahkan pilih sebuah gambar</string>
+
+    <!--  Button And Menu  -->
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="loading">Memuat</string>
+    <string name="register">Daftar</string>
+    <string name="login">Masuk</string>
     <string name="logout">Keluar</string>
-    <string name="error_message">Terjadi kegagalan %1$d : %2$s</string>
-    <string name="error_network">Silahkan periksa koneksi anda</string>
+
+    <!--  Guide  -->
+    <string name="please_register_to_continue">Silahkan mendaftar untuk melanjutkan</string>
+    <string name="please_login_to_continue">Silahkan masuk untuk melanjutkan</string>
+    <string name="please_input_your_username">Silahkan masukkan nama anda</string>
+    <string name="please_input_your_email">Silahkan masukkan email anda</string>
+    <string name="please_input_your_password">Silahkan masukkan password anda</string>
+
+    <!--  Error  -->
+    <string name="empty_username">Nama pengguna tidak boleh kosong</string>
     <string name="empty_email">Email tidak boleh kosong</string>
     <string name="invalid_email">Silahkan masukkan email yang valid</string>
     <string name="empty_password">Password tidak boleh kurang dari 6 huruf</string>
-    <string name="empty_username">Nama pengguna tidak boleh kosong</string>
-    <string name="loading">Memuat</string>
+    <string name="empty_picture">Silahkan pilih sebuah gambar terlebih dahulu</string>
+    <string name="empty_description">Silahkan masukkan deskripsi terlebih dahulu</string>
+    <string name="error_message">Terjadi kegagalan %1$d : %2$s</string>
+    <string name="error_network">Silahkan periksa koneksi anda</string>
+    <string name="permission_granted">Izin diberikan</string>
+    <string name="permission_denied">Silahkan berikan izin untuk melanjutkan</string>
+    <string name="error_camera">Gagal mengambil gambar</string>
+    <string name="error_launch_camera">Gagal meluncurkan Kamera</string>
 </resources>

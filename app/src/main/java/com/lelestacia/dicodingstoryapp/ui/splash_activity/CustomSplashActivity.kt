@@ -23,14 +23,12 @@ class CustomSplashActivity : AppCompatActivity() {
             .getString(Utility.USER_TOKEN, "") ?: ""
         lifecycleScope.launchWhenCreated {
             delay(1500)
-            if (userToken.isNotEmpty()) {
+            if (userToken.isNotEmpty())
                 startActivity(Intent(this@CustomSplashActivity, StoriesActivity::class.java))
-                finish()
-            }
-            else {
+                    .also { finish() }
+            else
                 startActivity(Intent(this@CustomSplashActivity, LoginActivity::class.java))
-                finish()
-            }
+                    .also { finish() }
         }
     }
 }

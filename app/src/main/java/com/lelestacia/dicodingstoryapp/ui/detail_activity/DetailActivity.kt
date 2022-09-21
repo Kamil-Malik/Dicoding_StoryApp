@@ -18,16 +18,22 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val story = intent.getParcelableExtra<Story>(Utility.STORY)
-        Glide.with(this).load(story?.photoUrl).fitCenter().into(binding.ivPhoto)
-        binding.tvTitle.text = story?.name
-        val newTimeStamp = story?.createdAt?.replace("T", " - ")
-        newTimeStamp?.removePrefix("Z")
-        binding.tvTimestamp.text = newTimeStamp
-        binding.tvDeskripsi.text = story?.description
+        val newTimeStamp = story!!.createdAt
+            .removeRange(16 until story.createdAt.length)
+            .replace("T", " - ")
+        binding.apply {
+            Glide.with(this@DetailActivity)
+                .load(story.photoUrl)
+                .fitCenter()
+                .into(ivPhoto)
+            tvTitle.text = story.name
+            tvTimestamp.text = newTimeStamp
+            tvDeskripsi.text = story.description
+        }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

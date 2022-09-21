@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="55dp"
         android:background="@drawable/form_background"
-        android:drawableStart="@drawable/ic_outline_email"
+        android:drawableStart="@drawable/ic_outline_person"
         android:drawablePadding="10dp"
         android:drawableTint="?android:attr/textColorPrimary"
         android:fontFamily="@font/sen"
@@ -133,4 +133,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvHasAccount"
         app:layout_constraintStart_toEndOf="@+id/tvHasAccount"
         app:layout_constraintTop_toTopOf="@+id/tvHasAccount" />
+
+    <include
+        android:id="@+id/layoutLoading"
+        layout="@layout/loading"
+        android:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
