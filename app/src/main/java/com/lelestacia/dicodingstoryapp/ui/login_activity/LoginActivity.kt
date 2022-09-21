@@ -3,9 +3,6 @@ package com.lelestacia.dicodingstoryapp.ui.login_activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Patterns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -68,42 +65,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.apply {
             btnLogin.setOnClickListener(this@LoginActivity)
-            btnLogin.isEnabled = false
             tvRegister.setOnClickListener(this@LoginActivity)
-            edtPassword.addTextChangedListener(object : TextWatcher{
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    return
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    when {
-                        (s?.length ?: 0) >= 6 -> btnLogin.isEnabled = true
-                        else -> {
-                            btnLogin.isEnabled = false
-                            edtPassword.error = resources.getString(R.string.empty_password)
-                        }
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    return
-                }
-
-            })
         }
     }
 
     private fun signInWithEmailAndPassword(email: String, password: String) {
-        when {
-            email.isEmpty() -> binding.edtEmail.error = resources.getString(R.string.empty_email)
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> binding.edtEmail.error = resources.getString(R.string.invalid_email)
-            else -> viewModel.signInWithEmailAndPassword(email, password)
-        }
+        if (binding.edtEmail.error.isEmpty() && binding.edtPassword.error.isEmpty())
+            viewModel.signInWithEmailAndPassword(email, password)
     }
 
     override fun onClick(v: View?) {
