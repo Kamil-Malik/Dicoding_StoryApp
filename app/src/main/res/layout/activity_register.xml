@@ -36,7 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvBanner" />
 
-    <com.lelestacia.dicodingstoryapp.ui.design.CustomEditText
+    <EditText
         android:id="@+id/edtUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,17 +54,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvSubbanner" />
 
-    <com.lelestacia.dicodingstoryapp.ui.design.CustomEditText
+    <com.lelestacia.dicodingstoryapp.ui.design.EmailEdt
         android:id="@+id/edtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/form_background"
         android:drawableStart="@drawable/ic_outline_email"
         android:drawablePadding="10dp"
         android:drawableTint="?android:attr/textColorPrimary"
         android:fontFamily="@font/sen"
-        android:hint="@string/please_input_your_email"
         android:inputType="textEmailAddress"
         android:textColor="?android:attr/textColorPrimary"
         android:textColorHint="?android:attr/textColorPrimary"
@@ -72,17 +71,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtUsername" />
 
-    <com.lelestacia.dicodingstoryapp.ui.design.CustomEditText
+    <com.lelestacia.dicodingstoryapp.ui.design.PasswordEdt
         android:id="@+id/edtPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/form_background"
         android:drawableStart="@drawable/ic_outline_lock"
         android:drawablePadding="10dp"
         android:drawableTint="?android:attr/textColorPrimary"
         android:fontFamily="@font/sen"
-        android:hint="@string/please_input_your_password"
         android:inputType="textPassword"
         android:textColor="?android:attr/textColorPrimary"
         android:textColorHint="?android:attr/textColorPrimary"

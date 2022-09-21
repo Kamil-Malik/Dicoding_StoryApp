@@ -1,10 +1,7 @@
 package com.lelestacia.dicodingstoryapp.ui.register_activity
 
- import android.os.Bundle
- import android.text.Editable
- import android.text.TextWatcher
- import android.util.Patterns
- import android.view.View
+import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,33 +27,6 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         binding.apply {
             tvLogin.setOnClickListener(this@RegisterActivity)
             btnRegister.setOnClickListener(this@RegisterActivity)
-            btnRegister.isEnabled = false
-
-            edtPassword.addTextChangedListener(object : TextWatcher{
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    return
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    when {
-                        (s?.length ?: 0) >= 6 -> btnRegister.isEnabled = true
-                        else -> {
-                            btnRegister.isEnabled = false
-                            edtPassword.error = resources.getString(R.string.empty_password)
-                        }
-                    }
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    return
-                }
-
-            })
         }
     }
 
@@ -104,18 +74,13 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         val username = binding.edtUsername.text.toString()
         val email = binding.edtEmail.text.toString().trim()
         val password = binding.edtPassword.text.toString().trim()
-
-        when {
-            username.isEmpty() ->  binding.edtUsername.error = resources.getString(R.string.empty_username)
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() ->
-                binding.edtEmail.error = resources.getString(R.string.invalid_email)
-            else -> viewModel.signUpWithEmailAndPassword(username, email, password)
-        }
+        if (binding.edtEmail.error.isEmpty() && binding.edtPassword.error.isEmpty())
+            viewModel.signUpWithEmailAndPassword(username, email, password)
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            binding.tvLogin.id -> onBackPressed()
+            binding.tvLogin.id -> onBackPressedDispatcher.onBackPressed()
             binding.btnRegister.id -> registerAccount()
         }
     }

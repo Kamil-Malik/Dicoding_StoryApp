@@ -1,4 +1,4 @@
-package com.lelestacia.dicodingstoryapp.ui.adapter
+package com.lelestacia.dicodingstoryapp.ui.stories_activity
 
 import android.app.Activity
 import android.content.Intent

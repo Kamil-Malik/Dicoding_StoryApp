@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.ActivityStoriesBinding
-import com.lelestacia.dicodingstoryapp.ui.adapter.StoriesAdapter
 import com.lelestacia.dicodingstoryapp.ui.add_story_activity.AddStoryActivity
 import com.lelestacia.dicodingstoryapp.ui.settings_activity.SettingsActivity
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
