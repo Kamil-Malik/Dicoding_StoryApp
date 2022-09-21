@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    tools:context=".ui.fragment.SplashFragment">
+    tools:context=".ui.splash_activity.CustomSplashActivity">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivSplash"

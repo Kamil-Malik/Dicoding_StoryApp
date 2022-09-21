@@ -2,7 +2,6 @@ package com.lelestacia.dicodingstoryapp.ui.design
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 
 class CustomEditText : AppCompatEditText {

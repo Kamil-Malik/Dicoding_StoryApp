@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="15dp"
-    android:layout_marginEnd="10dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="8dp"
     android:background="@drawable/stories_background"
-    android:paddingEnd="15dp">
+    android:paddingEnd="8dp"
+    tools:ignore="RtlSymmetry">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        app:civ_border_width="1dp"
-        app:civ_border_color="?android:attr/textColorPrimary"
         android:id="@+id/ivPhoto"
         android:layout_width="85dp"
         android:layout_height="85dp"
+        app:civ_border_color="?android:attr/textColorPrimary"
+        app:civ_border_width="1dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/kapal" />
@@ -25,13 +26,27 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/sen_bold"
         android:gravity="start"
         android:textColor="?android:attr/textColorPrimary"
-        app:layout_constraintBottom_toBottomOf="@+id/ivPhoto"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ivPhoto"
         app:layout_constraintTop_toTopOf="@+id/ivPhoto"
         tools:text="INI JUDUL STORY" />
+
+    <TextView
+        android:id="@+id/tvSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        tools:text="Ini deskripsi foto" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

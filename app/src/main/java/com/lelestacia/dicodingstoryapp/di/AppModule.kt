@@ -1,8 +1,8 @@
 package com.lelestacia.dicodingstoryapp.di
 
 import android.content.Context
-import com.lelestacia.dicodingstoryapp.BuildConfig
-import com.lelestacia.dicodingstoryapp.data.api.DicodingApi
+import androidx.viewbinding.BuildConfig
+import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepositoryImpl
 import dagger.Module
@@ -36,16 +36,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDicodingAPi(client: OkHttpClient): DicodingApi =
+    fun provideDicodingAPi(client: OkHttpClient): DicodingAPI =
         Retrofit.Builder().baseUrl("https://story-api.dicoding.dev/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
-            .build().create(DicodingApi::class.java)
+            .build().create(DicodingAPI::class.java)
 
     @Provides
     @Singleton
     fun provideMainRepository(
-        api: DicodingApi,
+        api: DicodingAPI,
         @ApplicationContext context: Context
     ): MainRepository = MainRepositoryImpl(api, context)
 }
