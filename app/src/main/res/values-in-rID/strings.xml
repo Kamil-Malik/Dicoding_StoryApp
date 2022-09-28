@@ -17,6 +17,8 @@
     <string name="register">Daftar</string>
     <string name="login">Masuk</string>
     <string name="logout">Keluar</string>
+    <string name="stories">Cerita-Cerita</string>
+    <string name="map">Peta</string>
 
     <!--  Guide  -->
     <string name="please_register_to_continue">Silahkan mendaftar untuk melanjutkan</string>

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build.VERSION
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -138,7 +139,12 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = it.data?.getSerializableExtra("picture") as File
+            val myFile = if (VERSION.SDK_INT >= 33) {
+                it.data?.getSerializableExtra("picture", File::class.java) as File
+            } else {
+                @Suppress("DEPRECATION")
+                it.data?.getSerializableExtra("picture") as File
+            }
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             val result = Utility().rotateBitmap(
@@ -179,8 +185,7 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
                 resources.getString(R.string.permission_denied),
                 Toast.LENGTH_SHORT
             ).show()
-        }
-        else if (requestCode == READ_EXTERNAL && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        } else if (requestCode == READ_EXTERNAL && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             launcherIntentGallery.launch(
                 Intent.createChooser(
                     Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),

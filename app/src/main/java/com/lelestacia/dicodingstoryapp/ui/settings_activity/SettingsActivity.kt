@@ -19,6 +19,7 @@ class SettingsActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         _binding = ActivitySettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.myCustomToolbar)
 
         val sharedPref = getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
 

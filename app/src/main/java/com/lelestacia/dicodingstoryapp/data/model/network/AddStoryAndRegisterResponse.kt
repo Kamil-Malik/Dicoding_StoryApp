@@ -1,11 +1,8 @@
-package com.lelestacia.dicodingstoryapp.data.model
+package com.lelestacia.dicodingstoryapp.data.model.network
 
 import com.google.gson.annotations.SerializedName
 
-data class LoginResponse(
-
-	@field:SerializedName("loginResult")
-	val loginResult: LoginResult,
+data class AddStoryAndRegisterResponse(
 
 	@field:SerializedName("error")
 	val error: Boolean,

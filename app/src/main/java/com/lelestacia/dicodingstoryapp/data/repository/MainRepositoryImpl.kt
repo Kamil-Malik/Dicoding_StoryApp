@@ -3,10 +3,16 @@ package com.lelestacia.dicodingstoryapp.data.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
-import com.lelestacia.dicodingstoryapp.data.model.AddStoryAndRegisterResponse
-import com.lelestacia.dicodingstoryapp.data.model.GetStoriesResponse
-import com.lelestacia.dicodingstoryapp.data.model.LoginResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.LoginResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
+import com.lelestacia.dicodingstoryapp.data.network.StoryPagingSource
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import com.lelestacia.dicodingstoryapp.utility.Utility
 import okhttp3.MediaType.Companion.toMediaType
@@ -77,6 +83,16 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getStoriesWithPagination(): LiveData<PagingData<NetworkStory>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(api, getToken())
+            }
+        ).liveData
+
     override suspend fun getAllStories(): NetworkResponse<GetStoriesResponse> {
         return try {
             NetworkResponse.Success(api.getStories(getToken()))
@@ -102,9 +118,9 @@ class MainRepositoryImpl @Inject constructor(
             val descriptionUpload = description.toRequestBody("text/plain".toMediaType())
             val uploadImage: RequestBody = photo.asRequestBody("image/jpeg".toMediaTypeOrNull())
             val imageMultiPart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                photo.name,
-                uploadImage
+                name = "photo",
+                filename = photo.name,
+                body = uploadImage
             )
             isUpdated.postValue(false)
             NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken()))
@@ -122,7 +138,41 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun uploadStory(
+        photo: File,
+        description: String,
+        lat: Float,
+        long: Float
+    ): NetworkResponse<AddStoryAndRegisterResponse> {
+        return try {
+            val descriptionUpload = description.toRequestBody("text/plain".toMediaType())
+            val uploadImage: RequestBody = photo.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val imageMultiPart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                photo.name,
+                uploadImage
+            )
+            isUpdated.postValue(false)
+            NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken(),lat,long))
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> NetworkResponse.NetworkException
+                is HttpException -> {
+                    NetworkResponse.GenericException(
+                        t.code(),
+                        t.message()
+                    )
+                }
+                else -> NetworkResponse.GenericException(null, t.message)
+            }
+        }
+    }
+
     override fun isUpdated(): LiveData<Boolean> = isUpdated
+
+    override fun update() {
+        isUpdated.value = true
+    }
 
     private fun getToken(): String =
         "Bearer ${

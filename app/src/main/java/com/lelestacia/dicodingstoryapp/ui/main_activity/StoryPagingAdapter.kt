@@ -1,33 +1,50 @@
-package com.lelestacia.dicodingstoryapp.ui.stories_activity
+package com.lelestacia.dicodingstoryapp.ui.main_activity
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.lelestacia.dicodingstoryapp.data.model.Story
+import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
 import com.lelestacia.dicodingstoryapp.databinding.StoryItemBinding
 import com.lelestacia.dicodingstoryapp.ui.detail_activity.DetailActivity
+import com.lelestacia.dicodingstoryapp.utility.DateFormatter
 import com.lelestacia.dicodingstoryapp.utility.Utility
+import java.util.*
 
-class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComparator()) {
+class StoryPagingAdapter :
+    PagingDataAdapter<NetworkStory, StoryPagingAdapter.ViewHolder>(DIFF_CALLBACK) {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = StoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val item = getItem(position)
+        if (item != null)
+            holder.bind(item)
+    }
 
     inner class ViewHolder(private val binding: StoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(item: Story) {
+        @RequiresApi(Build.VERSION_CODES.O)
+        fun bind(item: NetworkStory) {
             binding.apply {
                 Glide.with(this.root.context)
                     .load(item.photoUrl)
                     .fitCenter()
                     .into(ivPhoto)
                 tvTitle.text = item.name
-                tvSubtitle.text = item.description
+                tvUploadeDate.text = DateFormatter.formatDate(item.createdAt, TimeZone.getDefault().id)
                 this.root.setOnClickListener {
                     with(it.context) {
                         startActivity(
@@ -37,7 +54,7 @@ class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComp
                                 this as Activity,
                                 Pair(binding.ivPhoto, "transition_photo"),
                                 Pair(binding.tvTitle, "transition_title"),
-                                Pair(binding.tvSubtitle, "transition_description")
+                                Pair(binding.tvUploadeDate, "transition_description")
                             ).toBundle()
                         )
                     }
@@ -46,23 +63,15 @@ class StoriesAdapter : ListAdapter<Story, StoriesAdapter.ViewHolder>(StoriesComp
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = StoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
-    }
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NetworkStory>() {
+            override fun areItemsTheSame(oldItem: NetworkStory, newItem: NetworkStory): Boolean =
+                oldItem.id == newItem.id
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        if (item != null)
-            holder.bind(item)
-    }
 
-    class StoriesComparator : DiffUtil.ItemCallback<Story>() {
-        override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean =
-            oldItem.id == newItem.id
+            override fun areContentsTheSame(oldItem: NetworkStory, newItem: NetworkStory): Boolean =
+                oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean =
-            oldItem == newItem
-
+        }
     }
 }

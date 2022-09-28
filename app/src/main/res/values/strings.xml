@@ -16,6 +16,8 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="stories">Stories</string>
+    <string name="map">Map</string>
 
     <!--  Guide  -->
     <string name="please_register_to_continue">Please Register to Continue</string>
@@ -38,7 +40,10 @@
     <string name="error_camera">Failed to capture image</string>
     <string name="error_launch_camera">Failed to launch Camera</string>
 
+
     <string name="transition_photo" translatable="false">transition_photo</string>
     <string name="transition_title" translatable="false">transition_title</string>
     <string name="transition_description" translatable="false">transition_description</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 </resources>

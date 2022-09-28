@@ -1,11 +1,12 @@
-package com.lelestacia.dicodingstoryapp.data.model
+package com.lelestacia.dicodingstoryapp.data.model.network
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Story(
+data class NetworkStory(
+
     @field:SerializedName("photoUrl")
     val photoUrl: String,
 
@@ -26,4 +27,5 @@ data class Story(
 
     @field:SerializedName("lat")
     val lat: Double
+
 ) : Parcelable
