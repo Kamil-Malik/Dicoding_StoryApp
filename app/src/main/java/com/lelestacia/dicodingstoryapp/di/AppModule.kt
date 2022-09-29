@@ -1,8 +1,11 @@
 package com.lelestacia.dicodingstoryapp.di
 
 import android.content.Context
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import androidx.viewbinding.BuildConfig
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
+import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepositoryImpl
 import dagger.Module
@@ -41,6 +44,7 @@ object AppModule {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build().create(DicodingAPI::class.java)
+
 
     @Provides
     @Singleton

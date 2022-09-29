@@ -120,18 +120,46 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun startGallery() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            launcherIntentGallery.launch(
-                Intent.createChooser(
-                    Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
-                    resources
-                        .getString(R.string.choose_picture)
+
+        when {
+            VERSION.SDK_INT >= 33 -> {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    launcherIntentGallery.launch(
+                        Intent.createChooser(
+                            Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
+                            resources
+                                .getString(R.string.choose_picture)
+                        )
+                    )
+                } else {
+                    requestPermissions(
+                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                        READ_EXTERNAL
+                    )
+                }
+            }
+
+            else -> if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
                 )
-            )
-        } else {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), READ_EXTERNAL)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                launcherIntentGallery.launch(
+                    Intent.createChooser(
+                        Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
+                        resources
+                            .getString(R.string.choose_picture)
+                    )
+                )
+            } else {
+                requestPermissions(
+                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    READ_EXTERNAL
+                )
+            }
         }
     }
 

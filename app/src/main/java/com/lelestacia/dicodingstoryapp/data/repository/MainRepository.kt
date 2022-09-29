@@ -27,6 +27,8 @@ interface MainRepository {
 
     suspend fun getAllStories(): NetworkResponse<GetStoriesResponse>
 
+    suspend fun getAllStoriesWithLocation() : NetworkResponse<GetStoriesResponse>
+
     suspend fun uploadStory(photo: File, description: String) : NetworkResponse<AddStoryAndRegisterResponse>
 
     suspend fun uploadStory(photo: File, description: String, lat: Float, long: Float) : NetworkResponse<AddStoryAndRegisterResponse>

@@ -110,6 +110,23 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllStoriesWithLocation(): NetworkResponse<GetStoriesResponse> {
+        return try {
+            NetworkResponse.Success(api.getAllStoriesWithLocation(getToken()))
+        } catch (t: Throwable) {
+            when (t) {
+                is IOException -> NetworkResponse.NetworkException
+                is HttpException -> {
+                    NetworkResponse.GenericException(
+                        t.code(),
+                        t.message()
+                    )
+                }
+                else -> NetworkResponse.GenericException(null, t.message)
+            }
+        }
+    }
+
     override suspend fun uploadStory(
         photo: File,
         description: String

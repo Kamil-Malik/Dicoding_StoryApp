@@ -1,6 +1,7 @@
 package com.lelestacia.dicodingstoryapp.ui.detail_activity
 
 import android.os.Build
+import android.os.Build.VERSION
 import android.os.Bundle
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -24,14 +25,21 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.myCustomToolbar)
 
-        val networkStory = intent.getParcelableExtra<NetworkStory>(Utility.STORY)
+        val networkStory = if (VERSION.SDK_INT >= 33) {
+            intent.getParcelableExtra(Utility.STORY, NetworkStory::class.java) as NetworkStory
+        } else {
+            intent.getParcelableExtra(Utility.STORY)
+        }
+        networkStory as NetworkStory
+
         binding.apply {
             Glide.with(this@DetailActivity)
-                .load(networkStory!!.photoUrl)
+                .load(networkStory.photoUrl)
                 .fitCenter()
                 .into(ivPhoto)
             tvTitle.text = networkStory.name
-            tvTimestamp.text = DateFormatter.formatDate(networkStory.createdAt, TimeZone.getDefault().id)
+            tvTimestamp.text =
+                DateFormatter.formatDate(networkStory.createdAt, TimeZone.getDefault().id)
             tvDeskripsi.text = networkStory.description
         }
     }

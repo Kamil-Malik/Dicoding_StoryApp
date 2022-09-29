@@ -24,4 +24,5 @@ data class LocalStory(
 
     @ColumnInfo(name = "description")
     val description: String
+
 ) : Parcelable
