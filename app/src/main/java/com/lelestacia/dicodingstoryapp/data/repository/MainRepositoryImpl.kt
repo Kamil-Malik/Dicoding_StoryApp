@@ -3,16 +3,14 @@ package com.lelestacia.dicodingstoryapp.data.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.liveData
+import androidx.paging.*
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
+import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterResponse
 import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
 import com.lelestacia.dicodingstoryapp.data.model.network.LoginResponse
-import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
-import com.lelestacia.dicodingstoryapp.data.network.StoryPagingSource
+import com.lelestacia.dicodingstoryapp.data.network.StoryRemoteMediator
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import com.lelestacia.dicodingstoryapp.utility.Utility
 import okhttp3.MediaType.Companion.toMediaType
@@ -28,7 +26,8 @@ import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val api: DicodingAPI,
-    private val context: Context
+    private val context: Context,
+    private val storyDB: StoryDatabase
 ) : MainRepository {
 
     private val isUpdated: MutableLiveData<Boolean> = MutableLiveData(true)
@@ -83,13 +82,19 @@ class MainRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getStoriesWithPagination(): LiveData<PagingData<NetworkStory>> =
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getStoriesWithPagination(): LiveData<PagingData<LocalStory>> =
         Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
+            remoteMediator = StoryRemoteMediator(
+                storyDB = storyDB,
+                api = api,
+                token = getToken()
+            ),
             pagingSourceFactory = {
-                StoryPagingSource(api, getToken())
+                storyDB.storyDao().getAllStory()
             }
         ).liveData
 

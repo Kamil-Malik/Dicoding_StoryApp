@@ -36,7 +36,7 @@
             android:layout_marginEnd="5dp"
             android:text="@string/camera"
             android:textColor="@color/white"
-            app:backgroundTint="@color/red" />
+            app:backgroundTint="?attr/tabBackground" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGaleri"
@@ -45,7 +45,7 @@
             android:layout_marginStart="5dp"
             android:text="@string/gallery"
             android:textColor="@color/white"
-            app:backgroundTint="@color/red" />
+            app:backgroundTint="?attr/tabBackground" />
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -82,9 +82,20 @@
         android:layout_marginTop="10dp"
         android:text="@string/upload_photo"
         android:textColor="@color/white"
-        app:backgroundTint="@color/red"
+        app:backgroundTint="?attr/tabBackground"
         app:layout_constraintEnd_toEndOf="@id/edtInputDeskripsiLayout"
         app:layout_constraintTop_toBottomOf="@id/edtInputDeskripsiLayout" />
+
+    <CheckBox
+        android:id="@+id/checkLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="?attr/tabBackground"
+        android:text="@string/include_location"
+        android:textColor="?android:attr/textColorPrimary"
+        app:layout_constraintBottom_toBottomOf="@id/btnUpload"
+        app:layout_constraintStart_toStartOf="@+id/edtInputDeskripsiLayout"
+        app:layout_constraintTop_toTopOf="@id/btnUpload" />
 
     <include
         android:id="@+id/layoutLoading"

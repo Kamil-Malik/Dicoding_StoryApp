@@ -12,7 +12,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.databinding.StoryItemBinding
 import com.lelestacia.dicodingstoryapp.ui.detail_activity.DetailActivity
 import com.lelestacia.dicodingstoryapp.utility.DateFormatter
@@ -20,7 +20,7 @@ import com.lelestacia.dicodingstoryapp.utility.Utility
 import java.util.*
 
 class StoryPagingAdapter :
-    PagingDataAdapter<NetworkStory, StoryPagingAdapter.ViewHolder>(DIFF_CALLBACK) {
+    PagingDataAdapter<LocalStory, StoryPagingAdapter.ViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = StoryItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -37,7 +37,7 @@ class StoryPagingAdapter :
     inner class ViewHolder(private val binding: StoryItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @RequiresApi(Build.VERSION_CODES.O)
-        fun bind(item: NetworkStory) {
+        fun bind(item: LocalStory) {
             binding.apply {
                 Glide.with(this.root.context)
                     .load(item.photoUrl)
@@ -64,12 +64,12 @@ class StoryPagingAdapter :
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NetworkStory>() {
-            override fun areItemsTheSame(oldItem: NetworkStory, newItem: NetworkStory): Boolean =
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LocalStory>() {
+            override fun areItemsTheSame(oldItem: LocalStory, newItem: LocalStory): Boolean =
                 oldItem.id == newItem.id
 
 
-            override fun areContentsTheSame(oldItem: NetworkStory, newItem: NetworkStory): Boolean =
+            override fun areContentsTheSame(oldItem: LocalStory, newItem: LocalStory): Boolean =
                 oldItem == newItem
 
         }

@@ -21,9 +21,15 @@ class AddStoryViewModel @Inject constructor(
     private val _uploadStatus : MutableLiveData<NetworkResponse<AddStoryAndRegisterResponse>> = MutableLiveData()
     val uploadStatus : LiveData<NetworkResponse<AddStoryAndRegisterResponse>> get() = _uploadStatus
 
-    fun uploadPhoto(file: File, description: String) {
+    fun uploadStory(file: File, description: String) {
         _uploadStatus.value = NetworkResponse.Loading
         viewModelScope.launch(Dispatchers.IO)
         { _uploadStatus.postValue(repository.uploadStory(file, description)) }
+    }
+
+    fun uploadStory(file: File, description: String, lat: Float, lon: Float) {
+        _uploadStatus.value = NetworkResponse.Loading
+        viewModelScope.launch(Dispatchers.IO)
+        { _uploadStatus.postValue(repository.uploadStory(file, description, lat, lon)) }
     }
 }

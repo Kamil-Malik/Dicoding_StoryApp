@@ -1,14 +1,11 @@
 package com.lelestacia.dicodingstoryapp.utility
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 object DateFormatter {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun formatDate(currentDate : String, targetTimeZone: String): String {
         val instant = Instant.parse(currentDate)
         val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy | HH:mm")

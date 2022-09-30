@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
-import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +34,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val stories: LiveData<PagingData<NetworkStory>> =
+    val stories: LiveData<PagingData<LocalStory>> =
         repository.getStoriesWithPagination().cachedIn(viewModelScope)
 
     val isUpdated = repository.isUpdated()

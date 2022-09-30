@@ -4,7 +4,6 @@
     <string name="have_no_account">Belum memiliki akun?</string>
     <string name="already_have_an_account">Sudah memiliki akun?</string>
     <string name="upload_photo">Unggah Foto</string>
-    <string name="insert_description">Masukkan Deskripsi</string>
     <string name="welcome_message">Selamat Datang %1$d</string>
     <string name="uploaded_at">Diunggah pada %1$s</string>
     <string name="choose_picture">Silahkan pilih sebuah gambar</string>
@@ -19,6 +18,7 @@
     <string name="logout">Keluar</string>
     <string name="stories">Cerita-Cerita</string>
     <string name="map">Peta</string>
+    <string name="include_location">Sertakan Lokasi tekini?</string>
 
     <!--  Guide  -->
     <string name="please_register_to_continue">Silahkan mendaftar untuk melanjutkan</string>
@@ -26,6 +26,11 @@
     <string name="please_input_your_username">Silahkan masukkan nama anda</string>
     <string name="please_input_your_email">Silahkan masukkan email anda</string>
     <string name="please_input_your_password">Silahkan masukkan password anda</string>
+    <string name="need_camera_permission">Fitur ini membutuhkan akses terhadap Kamera untuk digunakan</string>
+    <string name="need_gallery_permission">Fitur ini membutuhkan akses terhadap Galeri untuk digunakan</string>
+    <string name="need_location_permission">Fitur ini membutuhkan akses terhadap Lokasi untuk digunakan</string>
+    <string name="insert_description">Masukkan Deskripsi</string>
+    <string name="complete_everything">Tolong lengkapi seluruh kolom</string>
 
     <!--  Error  -->
     <string name="empty_username">Nama pengguna tidak boleh kosong</string>

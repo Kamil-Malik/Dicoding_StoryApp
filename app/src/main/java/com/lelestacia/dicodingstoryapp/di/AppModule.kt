@@ -2,7 +2,6 @@ package com.lelestacia.dicodingstoryapp.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
 import androidx.viewbinding.BuildConfig
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
@@ -48,9 +47,21 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideRoomDB(@ApplicationContext context: Context) : StoryDatabase {
+        return Room.databaseBuilder(
+            context,
+            StoryDatabase::class.java,
+            "story_db"
+        ).build()
+    }
+
+
+    @Provides
+    @Singleton
     fun provideMainRepository(
         api: DicodingAPI,
-        @ApplicationContext context: Context
-    ): MainRepository = MainRepositoryImpl(api, context)
+        @ApplicationContext context: Context,
+        storyDatabase: StoryDatabase
+    ): MainRepository = MainRepositoryImpl(api, context, storyDatabase)
 }
 
