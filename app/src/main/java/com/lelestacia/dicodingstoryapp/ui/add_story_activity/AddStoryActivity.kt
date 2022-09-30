@@ -1,8 +1,8 @@
 package com.lelestacia.dicodingstoryapp.ui.add_story_activity
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build.VERSION
@@ -13,8 +13,9 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.ActivityAddStoryBinding
 import com.lelestacia.dicodingstoryapp.ui.camera.CameraActivity
@@ -24,16 +25,19 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 
 @AndroidEntryPoint
-class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
+class AddStoryActivity : AppCompatActivity(), View.OnClickListener,
+    EasyPermissions.PermissionCallbacks {
 
     private var _binding: ActivityAddStoryBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel by viewModels<AddStoryViewModel>()
     private var currentFile: File? = null
+    private var currentLocation: LatLng? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +49,34 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
             btnUpload.setOnClickListener(this@AddStoryActivity)
             btnGaleri.setOnClickListener(this@AddStoryActivity)
             btnKamera.setOnClickListener(this@AddStoryActivity)
+            checkLocation.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    getLocation()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        if (EasyPermissions.hasPermissions(
+                this@AddStoryActivity, Manifest
+                    .permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            val fusedLocationProviderClient =
+                LocationServices.getFusedLocationProviderClient(this@AddStoryActivity)
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+                if (it != null)
+                    currentLocation = LatLng(it.latitude, it.longitude)
+            }
+        } else {
+            EasyPermissions.requestPermissions(
+                this@AddStoryActivity,
+                resources.getString(R.string.need_location_permission),
+                ACCESS_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
         }
     }
 
@@ -92,39 +124,61 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun uploadFile() {
-        if (currentFile != null &&
-            binding.edtInputDeskripsi.text.toString().isNotEmpty()
-        ) {
-            viewModel.uploadPhoto(
-                currentFile as File,
-                binding.edtInputDeskripsi.text.toString()
+        val desc = binding.edtInputDeskripsi.text.toString()
+        if (currentLocation != null && currentFile != null && desc.isNotEmpty())
+            viewModel.uploadStory(
+                file = currentFile as File,
+                description = desc,
+                lat = (currentLocation as LatLng).latitude.toFloat(),
+                lon = (currentLocation as LatLng).longitude.toFloat()
             )
-        } else if (binding.edtInputDeskripsi.text.toString().isEmpty()) {
-            binding.edtInputDeskripsi.error = resources.getString(R.string.empty_description)
-        } else {
-            Toast.makeText(
-                this, resources.getString(R.string.empty_picture),
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+        else if (currentFile != null && desc.isNotEmpty())
+            viewModel.uploadStory(
+                file = currentFile as File,
+                description = desc
+            )
+        else
+            Toast.makeText(this, "PLease complete everything", Toast.LENGTH_SHORT).show()
     }
 
     private fun startCamera() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)) {
             launcherIntentCameraX.launch(Intent(this, CameraActivity::class.java))
         } else {
-            requestPermissions(arrayOf(Manifest.permission.CAMERA), CAMERA_CODE)
+            EasyPermissions.requestPermissions(
+                this,
+                resources.getString(R.string.need_camera_permission),
+                CAMERA_CODE,
+                Manifest.permission.CAMERA
+            )
         }
     }
 
     private fun startGallery() {
-
         when {
             VERSION.SDK_INT >= 33 -> {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES)
-                    == PackageManager.PERMISSION_GRANTED
+                if (EasyPermissions.hasPermissions(this, Manifest.permission.READ_MEDIA_IMAGES)) {
+                    launcherIntentGallery.launch(
+                        Intent.createChooser(
+                            Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
+                            resources
+                                .getString(R.string.choose_picture)
+                        )
+                    )
+                } else {
+                    EasyPermissions.requestPermissions(
+                        this,
+                        resources.getString(R.string.need_gallery_permission),
+                        READ_EXTERNAL,
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    )
+                }
+            }
+            else -> {
+                if (EasyPermissions.hasPermissions(
+                        this, Manifest
+                            .permission.READ_EXTERNAL_STORAGE
+                    )
                 ) {
                     launcherIntentGallery.launch(
                         Intent.createChooser(
@@ -134,31 +188,13 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
                         )
                     )
                 } else {
-                    requestPermissions(
-                        arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
-                        READ_EXTERNAL
+                    EasyPermissions.requestPermissions(
+                        this,
+                        resources.getString(R.string.need_gallery_permission),
+                        READ_EXTERNAL,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
                     )
                 }
-            }
-
-            else -> if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                launcherIntentGallery.launch(
-                    Intent.createChooser(
-                        Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
-                        resources
-                            .getString(R.string.choose_picture)
-                    )
-                )
-            } else {
-                requestPermissions(
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-                    READ_EXTERNAL
-                )
             }
         }
     }
@@ -167,12 +203,14 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = if (VERSION.SDK_INT >= 33) {
-                it.data?.getSerializableExtra("picture", File::class.java) as File
-            } else {
-                @Suppress("DEPRECATION")
-                it.data?.getSerializableExtra("picture") as File
+            val myFile = when {
+                VERSION.SDK_INT >= 33 -> it.data?.getSerializableExtra(
+                    "picture",
+                    File::class.java
+                ) as File
+                else -> it.data?.getSerializableExtra("picture") as File
             }
+
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             val result = Utility().rotateBitmap(
@@ -194,39 +232,36 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(
-                this,
-                resources.getString(R.string.permission_granted),
-                Toast.LENGTH_SHORT
-            ).show()
-            startCamera()
-        } else if (requestCode == CAMERA_CODE && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            Toast.makeText(
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        when (requestCode) {
+            READ_EXTERNAL -> startGallery()
+            CAMERA_CODE -> startCamera()
+            ACCESS_LOCATION -> getLocation()
+        }
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        when (requestCode) {
+            READ_EXTERNAL -> Toast.makeText(
                 this,
                 resources.getString(R.string.permission_denied),
                 Toast.LENGTH_SHORT
             ).show()
-        } else if (requestCode == READ_EXTERNAL && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            launcherIntentGallery.launch(
-                Intent.createChooser(
-                    Intent(Intent.ACTION_GET_CONTENT).setType("image/*"),
-                    resources
-                        .getString(R.string.choose_picture)
-                )
-            )
-        } else if (requestCode == READ_EXTERNAL && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-            Toast.makeText(
+
+            CAMERA_CODE -> Toast.makeText(
                 this,
                 resources.getString(R.string.permission_denied),
                 Toast.LENGTH_SHORT
             ).show()
+
+            ACCESS_LOCATION -> {
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.need_location_permission),
+                    Toast.LENGTH_SHORT
+                ).show()
+                binding.checkLocation.isChecked = false
+            }
         }
     }
 
@@ -247,5 +282,6 @@ class AddStoryActivity : AppCompatActivity(), View.OnClickListener {
         const val CAMERA_X_RESULT = 200
         private const val CAMERA_CODE = 100
         private const val READ_EXTERNAL = 300
+        private const val ACCESS_LOCATION = 500
     }
 }

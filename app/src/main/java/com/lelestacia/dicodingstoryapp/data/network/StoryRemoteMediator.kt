@@ -6,8 +6,6 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
-import com.lelestacia.dicodingstoryapp.data.database.KeyDao
-import com.lelestacia.dicodingstoryapp.data.database.StoryDao
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
 import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.local.RemoteKeys
@@ -17,8 +15,6 @@ import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator (
     private val storyDB : StoryDatabase,
-    private val storyDao: StoryDao,
-    private val keyDao: KeyDao,
     private val api: DicodingAPI,
     private val token: String
 ) : RemoteMediator<Int, LocalStory>() {
@@ -60,45 +56,46 @@ class StoryRemoteMediator (
 
             storyDB.withTransaction {
                 if (loadType == LoadType.REFRESH) {
-                    keyDao.deleteRemoteKeys()
-                    storyDao.deleteAll()
+                    storyDB.keyDao().deleteRemoteKeys()
+                    storyDB.storyDao().deleteAll()
                 }
                 val prevKey = if (page == 1) null else page - 1
                 val nextKey = if (endOfPaginationReached) null else page + 1
                 val keys = responseData.listNetworkStory.map {
                     RemoteKeys(id = it.id, prevKey = prevKey, nextKey = nextKey)
                 }
-                keyDao.insertAll(keys)
+                storyDB.keyDao().insertAll(keys)
 
-                val localStories : MutableList<LocalStory> = mutableListOf()
+                val localStories = arrayListOf<LocalStory>()
 
                 responseData.listNetworkStory.forEach {
                     localStories.add(DataMapper.mapStory(it))
                 }
-                storyDao.insertStory(localStories as List<LocalStory>)
+                storyDB.storyDao().insertStory(localStories as List<LocalStory>)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: Exception) {
+            InitializeAction.LAUNCH_INITIAL_REFRESH
             return MediatorResult.Error(exception)
         }
     }
 
     private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, LocalStory>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { data ->
-            keyDao.getRemoteKeysId(data.id)
+            storyDB.keyDao().getRemoteKeysId(data.id)
         }
     }
 
     private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, LocalStory>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { data ->
-            keyDao.getRemoteKeysId(data.id)
+            storyDB.keyDao().getRemoteKeysId(data.id)
         }
     }
 
     private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, LocalStory>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.id?.let { id ->
-                keyDao.getRemoteKeysId(id)
+                storyDB.keyDao().getRemoteKeysId(id)
             }
         }
     }

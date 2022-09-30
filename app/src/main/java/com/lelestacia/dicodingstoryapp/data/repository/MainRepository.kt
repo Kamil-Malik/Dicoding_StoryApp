@@ -2,10 +2,10 @@ package com.lelestacia.dicodingstoryapp.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterResponse
 import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
 import com.lelestacia.dicodingstoryapp.data.model.network.LoginResponse
-import com.lelestacia.dicodingstoryapp.data.model.network.NetworkStory
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import java.io.File
 
@@ -21,7 +21,7 @@ interface MainRepository {
         password: String
     ): NetworkResponse<LoginResponse>
 
-    fun getStoriesWithPagination() : LiveData<PagingData<NetworkStory>>
+    fun getStoriesWithPagination() : LiveData<PagingData<LocalStory>>
 
     fun update()
 
