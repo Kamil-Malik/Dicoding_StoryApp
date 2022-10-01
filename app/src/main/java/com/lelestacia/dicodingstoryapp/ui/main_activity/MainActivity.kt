@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         val mainPagerAdapter = MainPagerAdapter(this)
         val viewPager = binding.viewPager2
+        viewPager.isUserInputEnabled = false
         viewPager.adapter = mainPagerAdapter
         val tabs: TabLayout = binding.tabLayoutMain
         TabLayoutMediator(tabs, viewPager) { tab, position ->

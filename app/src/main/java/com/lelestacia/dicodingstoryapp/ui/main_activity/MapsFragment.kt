@@ -3,6 +3,7 @@ package com.lelestacia.dicodingstoryapp.ui.main_activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,15 +13,21 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.EasyPermissions
 
 
@@ -28,12 +35,11 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private val currentLocation =
         MutableLiveData<LatLng>()
-
     private val callback = OnMapReadyCallback { googleMap ->
 
         googleMap.apply {
             uiSettings.isZoomControlsEnabled = true
-            setMinZoomPreference(8F)
+            setMinZoomPreference(5F)
             mapType = GoogleMap.MAP_TYPE_TERRAIN
         }
 
@@ -45,11 +51,24 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 is NetworkResponse.Success -> {
                     with(it.data.listNetworkStory) {
                         this.forEach { story ->
-                            googleMap.addMarker(
-                                MarkerOptions()
-                                    .position(LatLng(story.lat, story.lon))
-                                    .title(story.name)
-                            )
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                val bmp =
+                                    Glide.with(this@MapsFragment)
+                                        .asBitmap()
+                                        .circleCrop()
+                                        .load(story.photoUrl)
+                                        .submit().get()
+
+                                withContext(Dispatchers.Main) {
+                                    googleMap.addMarker(
+                                        MarkerOptions()
+                                            .position(LatLng(story.lat, story.lon))
+                                            .title(story.name)
+                                            .icon(BitmapDescriptorFactory
+                                                .fromBitmap(Bitmap.createScaledBitmap(bmp, 100,100,false)))
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -62,7 +81,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 googleMap.animateCamera(CameraUpdateFactory.newLatLng(it))
         }
     }
-
     private val viewModel by activityViewModels<MainViewModel>()
 
     override fun onCreateView(
@@ -79,6 +97,8 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
+
+
 
     private fun checkPermission() {
         if (EasyPermissions.hasPermissions(
@@ -120,9 +140,11 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 if (it == null) {
                     Log.w(TAG, "setLocation: Failed to get location")
                     setLocation()
-                } else
+                } else {
                     Log.d(TAG, "setLocation: ${it.latitude} , ${it.longitude}")
-                currentLocation.value = LatLng(it.latitude, it.longitude)
+                    currentLocation.value = LatLng(it.latitude, it.longitude)
+                }
+
             }.addOnFailureListener {
                 Log.e(TAG, "setLocation: ${it.message}")
                 setLocation()
