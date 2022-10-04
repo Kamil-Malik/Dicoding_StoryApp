@@ -45,6 +45,7 @@
     <string name="permission_denied">Please grant permission to continue</string>
     <string name="error_camera">Failed to capture image</string>
     <string name="error_launch_camera">Failed to launch Camera</string>
+    <string name="error_loading">Retry</string>
 
 
     <string name="transition_photo" translatable="false">transition_photo</string>
@@ -52,4 +53,5 @@
     <string name="transition_description" translatable="false">transition_description</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="map_id" translatable="false">b7c57c5f99bcb2da</string>
 </resources>

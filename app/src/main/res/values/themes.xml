@@ -20,5 +20,9 @@
         <item name="tabTextColor">@color/broken_white</item>
         <item name="tabSelectedTextColor">@color/white</item>
         <item name="tabIndicatorColor">@color/teal</item>
+        
+        <!--Indicator-->
+        <item name="indicatorColor">@color/red</item>
+        <item name="trackColor">@color/peach</item>
     </style>
 </resources>

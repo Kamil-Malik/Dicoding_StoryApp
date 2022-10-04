@@ -28,7 +28,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun getAllStoriesWithLocation() {
-
         viewModelScope.launch(Dispatchers.IO) {
             _storiesWithLocation.postValue(repository.getAllStoriesWithLocation())
         }

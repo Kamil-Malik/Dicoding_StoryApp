@@ -3,6 +3,7 @@ package com.lelestacia.dicodingstoryapp.ui.main_activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -20,29 +21,33 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import com.lelestacia.dicodingstoryapp.R
+import com.lelestacia.dicodingstoryapp.data.model.mapper.DataMapper
+import com.lelestacia.dicodingstoryapp.ui.detail_activity.DetailActivity
+import com.lelestacia.dicodingstoryapp.utility.DateFormatter
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import com.lelestacia.dicodingstoryapp.utility.Utility
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.EasyPermissions
+import java.util.TimeZone
 
 
-class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, GoogleMap.OnMarkerClickListener {
 
     private val currentLocation =
         MutableLiveData<LatLng>()
     private val callback = OnMapReadyCallback { googleMap ->
 
         googleMap.apply {
+            setOnMarkerClickListener(this@MapsFragment)
             uiSettings.isZoomControlsEnabled = true
-            setMinZoomPreference(5F)
-            mapType = GoogleMap.MAP_TYPE_TERRAIN
+            setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.style))
+            setMinZoomPreference(7F)
+            setMaxZoomPreference(12F)
         }
-
 
         viewModel.storiesWithLocation.observe(viewLifecycleOwner) {
             when (it) {
@@ -64,6 +69,7 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                                         MarkerOptions()
                                             .position(LatLng(story.lat, story.lon))
                                             .title(story.name)
+                                            .snippet(DateFormatter.formatDate(story.createdAt, TimeZone.getDefault().id))
                                             .icon(BitmapDescriptorFactory
                                                 .fromBitmap(Bitmap.createScaledBitmap(bmp, 100,100,false)))
                                     )
@@ -97,8 +103,6 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
-
-
 
     private fun checkPermission() {
         if (EasyPermissions.hasPermissions(
@@ -152,6 +156,17 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         } catch (e: Exception) {
             Log.e(TAG, "setLocation: ${e.message}")
         }
+    }
+
+    override fun onMarkerClick(mark: Marker): Boolean {
+        val markerData = viewModel.storiesWithLocation.value
+        if (markerData is NetworkResponse.Success) {
+            val selectedMarker = markerData.data.listNetworkStory.first { it.name == mark.title &&
+                    DateFormatter.formatDate(it.createdAt, TimeZone.getDefault().id) == mark.snippet}
+            startActivity(Intent(requireContext(), DetailActivity::class.java).putExtra(Utility.STORY,
+                DataMapper.mapStory(selectedMarker)))
+        }
+        return true
     }
 
     companion object {

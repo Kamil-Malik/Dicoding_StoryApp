@@ -31,7 +31,11 @@ class StoriesFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         val adapter = StoryPagingAdapter()
         binding.apply {
-            rvStories.adapter = adapter
+            rvStories.adapter = adapter.withLoadStateFooter(
+                footer = LoadingStateAdapter {
+                    adapter.retry()
+                }
+            )
             rvStories.layoutManager = LinearLayoutManager(requireContext())
             fabAddStory.setOnClickListener(this@StoriesFragment)
         }

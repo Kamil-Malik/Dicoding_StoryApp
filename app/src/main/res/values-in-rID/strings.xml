@@ -45,4 +45,5 @@
     <string name="permission_denied">Silahkan berikan izin untuk melanjutkan</string>
     <string name="error_camera">Gagal mengambil gambar</string>
     <string name="error_launch_camera">Gagal meluncurkan Kamera</string>
+    <string name="error_loading">Ulangi</string>
 </resources>
