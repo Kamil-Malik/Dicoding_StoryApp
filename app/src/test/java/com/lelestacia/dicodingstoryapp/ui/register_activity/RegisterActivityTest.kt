@@ -33,8 +33,8 @@ class RegisterActivityTest {
         )
         val actualResult = registerViewModel.registerInformation.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-        if (actualResult is NetworkResponse.GenericException)
-            Assert.assertEquals(expectedResult, actualResult)
+//        if (actualResult is NetworkResponse.GenericException)
+//            Assert.assertEquals(expectedResult, actualResult)
     }
 
     @Test
@@ -48,8 +48,8 @@ class RegisterActivityTest {
         )
         val actualResult = registerViewModel.registerInformation.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-        if (actualResult is NetworkResponse.Success) {
-            Assert.assertEquals(expectedResult, actualResult.data.error)
-        }
+//        if (actualResult is NetworkResponse.Success) {
+//            Assert.assertEquals(expectedResult, actualResult.data.error)
+//        }
     }
 }

@@ -31,8 +31,8 @@ class LoginViewModelTest {
         )
         val actualResult = loginViewModel.loginInfo.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-        if (actualResult is NetworkResponse.GenericException)
-            Assert.assertEquals(expectedResult, actualResult)
+//        if (actualResult is NetworkResponse.GenericException)
+//            Assert.assertEquals(expectedResult, actualResult)
     }
 
     @Test
@@ -41,8 +41,8 @@ class LoginViewModelTest {
         loginViewModel.signInWithEmailAndPassword("", "")
         val actualResult = loginViewModel.loginInfo.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-        if (actualResult is NetworkResponse.GenericException)
-            Assert.assertEquals(expectedResult, actualResult)
+//        if (actualResult is NetworkResponse.GenericException)
+//            Assert.assertEquals(expectedResult, actualResult)
     }
 
     @Test
@@ -53,7 +53,8 @@ class LoginViewModelTest {
         )
         val actualResult = loginViewModel.loginInfo.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-        if (actualResult is NetworkResponse.Success)
-            Assert.assertEquals(false, actualResult.data.error)
+//        loginViewModel.loginInfo.observeForever {
+//            Assert.assertEquals(false, actualResult)
+//        }
     }
 }
