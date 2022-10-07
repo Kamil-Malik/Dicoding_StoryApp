@@ -131,7 +131,6 @@ class MainRepositoryImpl @Inject constructor(
             NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken()))
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> NetworkResponse.NetworkException
                 is HttpException -> {
                     NetworkResponse.GenericException(
                         t.code(),
@@ -161,7 +160,6 @@ class MainRepositoryImpl @Inject constructor(
             NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken(),lat,long))
         } catch (t: Throwable) {
             when (t) {
-                is IOException -> NetworkResponse.NetworkException
                 is HttpException -> {
                     NetworkResponse.GenericException(
                         t.code(),
@@ -183,6 +181,5 @@ class MainRepositoryImpl @Inject constructor(
         "Bearer ${
             context
                 .getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
-                .getString(Utility.USER_TOKEN, "")}"
-
+                .getString(Utility.USER_TOKEN, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTZ4dFRiWmt5Tk5tem5zN1AiLCJpYXQiOjE2NjI4MTA3MzZ9.DYfer_Yv5Lqs-UQMuMD2Vh-NimOhWQDjYdZLp-E0nXc")}"
 }

@@ -4,6 +4,7 @@ import com.lelestacia.dicodingstoryapp.data.repository.getOrAwaitValue
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -31,8 +32,8 @@ class LoginViewModelTest {
         )
         val actualResult = loginViewModel.loginInfo.getOrAwaitValue()
         Assert.assertEquals(NetworkResponse.Loading, actualResult)
-//        if (actualResult is NetworkResponse.GenericException)
-//            Assert.assertEquals(expectedResult, actualResult)
+        delay(10000)
+        Assert.assertEquals(expectedResult, loginViewModel.loginInfo.value)
     }
 
     @Test

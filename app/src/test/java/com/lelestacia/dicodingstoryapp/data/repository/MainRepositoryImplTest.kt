@@ -2,19 +2,22 @@ package com.lelestacia.dicodingstoryapp.data.repository
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.ListUpdateCallback
+import com.google.android.gms.maps.model.LatLng
+import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
-import com.lelestacia.dicodingstoryapp.ui.main_activity.StoryPagingAdapter
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,6 +28,7 @@ class MainRepositoryImplTest {
     private lateinit var database: StoryDatabase
     private lateinit var apiService: DicodingAPI
     private lateinit var repository: MainRepositoryImpl
+    private lateinit var photo: File
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -38,6 +42,16 @@ class MainRepositoryImplTest {
         database = Module.getDatabase()
         apiService = Module.getRetrofit()
         repository = MainRepositoryImpl(apiService, context, database)
+        val drawable = context.resources.openRawResource(R.drawable.foto_twrp)
+        val f = File("test-File")
+        val inputStream: InputStream = context.resources.openRawResource(R.drawable.foto_twrp)
+        val out: OutputStream = FileOutputStream(f)
+        val buf = ByteArray(1024)
+        var len: Int
+        while (inputStream.read(buf).also { len = it } > 0) out.write(buf, 0, len)
+        out.close()
+        inputStream.close()
+        photo = f
     }
 
     @After
@@ -69,9 +83,7 @@ class MainRepositoryImplTest {
             email = "km8003296@gmail.com",
             password = "kamilmalik"
         )
-        if (actualResult is NetworkResponse.Success) {
-            Assert.assertEquals(expectedResult, actualResult.data.error)
-        }
+        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
     }
 
     @Test
@@ -94,18 +106,41 @@ class MainRepositoryImplTest {
             email = "$randomString@gmail.com",
             password = "kamilmalik"
         )
-        if (actualResult is NetworkResponse.Success) {
-            Assert.assertEquals(expectedResult, actualResult.data.error)
-        }
+        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
     }
 
     @Test
-    fun `Successfully get all stories with Location`() = runTest {
+    fun `Successful get all stories with Location`() = runTest {
         val expectedResult = false
         val actualResult = repository.getAllStoriesWithLocation()
-        if (actualResult is NetworkResponse.Success) {
-            Assert.assertEquals(expectedResult, actualResult.data.error)
-        }
+        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+    }
+
+    @Test
+    fun `Failed Uploading file because of empty description`() = runTest {
+        val expectedResult = NetworkResponse.GenericException(code = 400, cause = "Bad Request")
+        val actualResult = repository.uploadStory(photo, "")
+        Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `Successful Upload Image without any location`() = runTest {
+        val expectedResult = false
+        val actualResult = repository.uploadStory(photo, "Unit Test")
+        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+    }
+
+    @Test
+    fun `Successful upload Image with location`() = runTest {
+        val expectedResult = false
+        val position = LatLng(-1.6128372919924492, 103.53365088692506)
+        val actualResult = repository.uploadStory(
+            photo,
+            "Unit Test with Location",
+            position.latitude.toFloat(),
+            position.longitude.toFloat()
+        )
+        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
     }
 
 //    @Test
