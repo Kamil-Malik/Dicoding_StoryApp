@@ -23,7 +23,6 @@ import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
-
 class MainRepositoryImpl @Inject constructor(
     private val api: DicodingAPI,
     private val context: Context,
@@ -83,24 +82,28 @@ class MainRepositoryImpl @Inject constructor(
     }
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getStoriesWithPagination(): LiveData<PagingData<LocalStory>> =
-        Pager(
+    override fun getStoriesWithPagination(token: String?): LiveData<PagingData<LocalStory>> {
+        val apiToken = if (token.isNullOrEmpty()) getToken() else token
+        return Pager(
             config = PagingConfig(
                 pageSize = 5
             ),
             remoteMediator = StoryRemoteMediator(
                 storyDB = storyDB,
                 api = api,
-                token = getToken()
+                token = apiToken
             ),
             pagingSourceFactory = {
                 storyDB.storyDao().getAllStory()
             }
         ).liveData
+    }
 
-    override suspend fun getAllStoriesWithLocation(): NetworkResponse<GetStoriesResponse> {
+
+    override suspend fun getAllStoriesWithLocation(token: String?): NetworkResponse<GetStoriesResponse> {
         return try {
-            NetworkResponse.Success(api.getAllStoriesWithLocation(getToken()))
+            val apiToken = if (token.isNullOrEmpty()) getToken() else token
+            NetworkResponse.Success(api.getAllStoriesWithLocation(apiToken))
         } catch (t: Throwable) {
             when (t) {
                 is IOException -> NetworkResponse.NetworkException
@@ -117,7 +120,8 @@ class MainRepositoryImpl @Inject constructor(
 
     override suspend fun uploadStory(
         photo: File,
-        description: String
+        description: String,
+        token: String?
     ): NetworkResponse<AddStoryAndRegisterResponse> {
         return try {
             val descriptionUpload = description.toRequestBody("text/plain".toMediaType())
@@ -128,7 +132,8 @@ class MainRepositoryImpl @Inject constructor(
                 body = uploadImage
             )
             isUpdated.postValue(false)
-            NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken()))
+            val apiToken = if (token.isNullOrEmpty()) getToken() else token
+            NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, apiToken))
         } catch (t: Throwable) {
             when (t) {
                 is HttpException -> {
@@ -146,7 +151,8 @@ class MainRepositoryImpl @Inject constructor(
         photo: File,
         description: String,
         lat: Float,
-        long: Float
+        long: Float,
+        token: String?
     ): NetworkResponse<AddStoryAndRegisterResponse> {
         return try {
             val descriptionUpload = description.toRequestBody("text/plain".toMediaType())
@@ -157,7 +163,8 @@ class MainRepositoryImpl @Inject constructor(
                 uploadImage
             )
             isUpdated.postValue(false)
-            NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, getToken(),lat,long))
+            val apiToken = if (token.isNullOrEmpty()) getToken() else token
+            NetworkResponse.Success(api.addStory(imageMultiPart, descriptionUpload, apiToken,lat,long))
         } catch (t: Throwable) {
             when (t) {
                 is HttpException -> {
@@ -181,5 +188,6 @@ class MainRepositoryImpl @Inject constructor(
         "Bearer ${
             context
                 .getSharedPreferences(Utility.USER_PREF, Context.MODE_PRIVATE)
-                .getString(Utility.USER_TOKEN, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTZ4dFRiWmt5Tk5tem5zN1AiLCJpYXQiOjE2NjI4MTA3MzZ9.DYfer_Yv5Lqs-UQMuMD2Vh-NimOhWQDjYdZLp-E0nXc")}"
+                .getString(Utility.USER_TOKEN, "")}"
 }
+

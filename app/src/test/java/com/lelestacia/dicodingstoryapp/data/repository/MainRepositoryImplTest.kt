@@ -9,8 +9,12 @@ import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -29,6 +33,8 @@ class MainRepositoryImplTest {
     private lateinit var apiService: DicodingAPI
     private lateinit var repository: MainRepositoryImpl
     private lateinit var photo: File
+    private val token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTZ4dFRiWmt5Tk5tem5zN1AiLCJpYXQiOjE2NjI4MTA3MzZ9.DYfer_Yv5Lqs-UQMuMD2Vh-NimOhWQDjYdZLp-E0nXc"
+    private val dispatcher = StandardTestDispatcher()
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -42,7 +48,6 @@ class MainRepositoryImplTest {
         database = Module.getDatabase()
         apiService = Module.getRetrofit()
         repository = MainRepositoryImpl(apiService, context, database)
-        val drawable = context.resources.openRawResource(R.drawable.foto_twrp)
         val f = File("test-File")
         val inputStream: InputStream = context.resources.openRawResource(R.drawable.foto_twrp)
         val out: OutputStream = FileOutputStream(f)
@@ -52,104 +57,98 @@ class MainRepositoryImplTest {
         out.close()
         inputStream.close()
         photo = f
+        Dispatchers.setMain(dispatcher)
     }
 
     @After
     fun tearDown() {
         database.close()
+        Dispatchers.resetMain()
     }
 
     @Test
     fun `Failed login because wrong Email or Password`() = runTest {
-        val expectedResult = NetworkResponse.GenericException(code = 401, cause = "Unauthorized")
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com",
             password = "kamil"
         )
-        Assert.assertEquals(expectedResult, actualResult)
+        Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
 
     @Test
     fun `Failed login because of empty email or password`() = runTest {
-        val expectedResult = NetworkResponse.GenericException(code = 400, cause = "Bad Request")
         val actualResult = repository.signInWithEmailAndPassword("", "")
-        Assert.assertEquals(expectedResult, actualResult)
+        Assert.assertTrue("This test should failed with Generic Exception",actualResult is NetworkResponse.GenericException)
     }
 
     @Test
     fun `Successful login with correct Email and Password`() = runTest {
-        val expectedResult = false
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com",
             password = "kamilmalik"
         )
-        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+        Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
     fun `Failed Registration`() = runTest {
-        val expectedResult = NetworkResponse.GenericException(code = 400, cause = "Bad Request")
         val actualResult = repository.signUpUserWithEmailAndPassword(
             name = "kamil",
             email = "km8003296@gmail.com",
             password = "kamilmalik"
         )
-        Assert.assertEquals(expectedResult, actualResult)
+        Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
 
     @Test
     fun `Successful Registration`() = runTest {
         val randomString = java.util.UUID.randomUUID().toString()
-        val expectedResult = false
         val actualResult = repository.signUpUserWithEmailAndPassword(
             name = "kamil",
             email = "$randomString@gmail.com",
             password = "kamilmalik"
         )
-        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+        Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
     fun `Successful get all stories with Location`() = runTest {
-        val expectedResult = false
-        val actualResult = repository.getAllStoriesWithLocation()
-        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+        val actualResult = repository.getAllStoriesWithLocation(token)
+        Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
     fun `Failed Uploading file because of empty description`() = runTest {
-        val expectedResult = NetworkResponse.GenericException(code = 400, cause = "Bad Request")
-        val actualResult = repository.uploadStory(photo, "")
-        Assert.assertEquals(expectedResult, actualResult)
+        val actualResult = repository.uploadStory(photo, "", token)
+        Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
 
     @Test
     fun `Successful Upload Image without any location`() = runTest {
-        val expectedResult = false
-        val actualResult = repository.uploadStory(photo, "Unit Test")
-        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+        val actualResult = repository.uploadStory(photo, "Unit Test", token)
+        Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
     fun `Successful upload Image with location`() = runTest {
-        val expectedResult = false
         val position = LatLng(-1.6128372919924492, 103.53365088692506)
         val actualResult = repository.uploadStory(
             photo,
             "Unit Test with Location",
             position.latitude.toFloat(),
-            position.longitude.toFloat()
+            position.longitude.toFloat(),
+            token
         )
-        Assert.assertEquals(expectedResult, (actualResult as NetworkResponse.Success).data.error)
+        Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
 //    @Test
 //    fun `Paging3 Test`() = runTest {
-//        val actualResult = repository.getStoriesWithPagination().getOrAwaitValue()
+//        val actualResult = repository.getStoriesWithPagination(token).getOrAwaitValue()
 //        val differ = AsyncPagingDataDiffer(
 //            diffCallback = StoryPagingAdapter.DIFF_CALLBACK,
 //            updateCallback = noopListUpdateCallback,
-//            workerDispatcher = Dispatchers.Main,
+//            workerDispatcher = UnconfinedTestDispatcher(),
 //        )
 //        differ.submitData(actualResult)
 //        Assert.assertNotNull(differ.snapshot())

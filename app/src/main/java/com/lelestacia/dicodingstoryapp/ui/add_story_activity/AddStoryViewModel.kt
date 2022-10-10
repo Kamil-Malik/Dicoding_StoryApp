@@ -24,12 +24,12 @@ class AddStoryViewModel @Inject constructor(
     fun uploadStory(file: File, description: String) {
         _uploadStatus.value = NetworkResponse.Loading
         viewModelScope.launch(Dispatchers.IO)
-        { _uploadStatus.postValue(repository.uploadStory(file, description)) }
+        { _uploadStatus.postValue(repository.uploadStory(file, description, null)) }
     }
 
     fun uploadStory(file: File, description: String, lat: Float, lon: Float) {
         _uploadStatus.value = NetworkResponse.Loading
         viewModelScope.launch(Dispatchers.IO)
-        { _uploadStatus.postValue(repository.uploadStory(file, description, lat, lon)) }
+        { _uploadStatus.postValue(repository.uploadStory(file, description, lat, lon, null)) }
     }
 }

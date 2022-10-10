@@ -21,15 +21,15 @@ interface MainRepository {
         password: String
     ): NetworkResponse<LoginResponse>
 
-    fun getStoriesWithPagination() : LiveData<PagingData<LocalStory>>
+    fun getStoriesWithPagination(token: String?) : LiveData<PagingData<LocalStory>>
 
     fun update()
 
-    suspend fun getAllStoriesWithLocation() : NetworkResponse<GetStoriesResponse>
+    suspend fun getAllStoriesWithLocation(token: String?) : NetworkResponse<GetStoriesResponse>
 
-    suspend fun uploadStory(photo: File, description: String) : NetworkResponse<AddStoryAndRegisterResponse>
+    suspend fun uploadStory(photo: File, description: String, token: String?) : NetworkResponse<AddStoryAndRegisterResponse>
 
-    suspend fun uploadStory(photo: File, description: String, lat: Float, long: Float) : NetworkResponse<AddStoryAndRegisterResponse>
+    suspend fun uploadStory(photo: File, description: String, lat: Float, long: Float, token: String?) : NetworkResponse<AddStoryAndRegisterResponse>
 
     fun isUpdated() : LiveData<Boolean>
 }

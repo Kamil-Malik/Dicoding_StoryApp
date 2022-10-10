@@ -29,12 +29,12 @@ class MainViewModel @Inject constructor(
 
     fun getAllStoriesWithLocation() {
         viewModelScope.launch(Dispatchers.IO) {
-            _storiesWithLocation.postValue(repository.getAllStoriesWithLocation())
+            _storiesWithLocation.postValue(repository.getAllStoriesWithLocation(null))
         }
     }
 
     val stories: LiveData<PagingData<LocalStory>> =
-        repository.getStoriesWithPagination().cachedIn(viewModelScope)
+        repository.getStoriesWithPagination(null).cachedIn(viewModelScope)
 
     val isUpdated = repository.isUpdated()
 }
