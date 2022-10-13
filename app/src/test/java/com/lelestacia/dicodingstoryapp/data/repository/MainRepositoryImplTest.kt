@@ -57,7 +57,7 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Failed login because wrong Email or Password`() = runTest {
+    fun `Login failed due to wrong email or password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com", password = "kamil"
         )
@@ -65,7 +65,7 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Failed login because of empty email or password`() = runTest {
+    fun `Login failed due to empty email or password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword("", "")
         Assert.assertTrue(
             actualResult is NetworkResponse.GenericException
@@ -73,7 +73,7 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Successful login with correct Email and Password`() = runTest {
+    fun `Successfully logged in with the correct email and password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com", password = "kamilmalik"
         )
@@ -100,19 +100,19 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Failed get all stories with Location`() = runTest {
+    fun `Failed to get story list due to wrong token`() = runTest {
         val actualResult = repository.getAllStoriesWithLocation(token = "token_salah")
         Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
 
     @Test
-    fun `Successful get all stories with Location`() = runTest {
+    fun `Managed to get the whole story with location`() = runTest {
         val actualResult = repository.getAllStoriesWithLocation(Requirement.getToken())
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
-    fun `Failed Uploading file because of empty description`() = runTest {
+    fun `Failed to upload due to empty description`() = runTest {
         val actualResult = repository.uploadStory(
             photo = photo,
             description = "",
@@ -122,7 +122,7 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Successful Upload Image without any location`() = runTest {
+    fun `Successfully upload image without location`() = runTest {
         val actualResult = repository.uploadStory(
             photo = photo,
             description = "Unit Test",
@@ -145,7 +145,7 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Successfully get all stories with page`() = runTest {
+    fun `Successfully got story by page`() = runTest {
         val fakeRepository = Mockito.mock(MainRepository::class.java)
         val actualStory = apiService.getStoriesWithPage(
             token = Requirement.getToken(),

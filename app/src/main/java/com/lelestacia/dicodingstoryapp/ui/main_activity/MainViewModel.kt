@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
@@ -18,7 +19,8 @@ class MainViewModel @Inject constructor(
     private val repository: MainRepository
 ) : ViewModel() {
 
-    private val _storiesWithLocation: MutableLiveData<NetworkResponse<GetStoriesResponse>> = MutableLiveData()
+    private val _storiesWithLocation: MutableLiveData<NetworkResponse<GetStoriesResponse>> =
+        MutableLiveData()
     val storiesWithLocation: LiveData<NetworkResponse<GetStoriesResponse>> get() = _storiesWithLocation
 
     init {
@@ -31,8 +33,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    val stories: LiveData<PagingData<LocalStory>> =
-        repository.getStoriesWithPagination(null)
+    fun getStoriesWithPage(): LiveData<PagingData<LocalStory>> =
+        repository.getStoriesWithPagination(null).cachedIn(viewModelScope)
 
     val isUpdated = repository.isUpdated()
 }

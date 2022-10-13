@@ -40,7 +40,7 @@ class StoriesFragment : Fragment(), View.OnClickListener {
             fabAddStory.setOnClickListener(this@StoriesFragment)
         }
 
-        viewModel.stories.observe(viewLifecycleOwner){
+        viewModel.getStoriesWithPage().observe(viewLifecycleOwner){
             adapter.submitData(lifecycle, it)
         }
 

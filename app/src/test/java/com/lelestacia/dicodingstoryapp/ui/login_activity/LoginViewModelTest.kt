@@ -39,7 +39,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Failed login because wrong Email or Password`() = runTest {
+    fun `Login failed due to wrong email or password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com",
             password = "kamil"
@@ -64,7 +64,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Failed login because of empty email or password`() = runTest {
+    fun `Login failed due to empty email or password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword("", "")
         `when`(fakeRepository.signInWithEmailAndPassword("", "")).thenReturn(actualResult)
         val listResult = arrayListOf<NetworkResponse<LoginResponse>>()
@@ -77,7 +77,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `Successful login with correct Email and Password`() = runTest {
+    fun `Successfully logged in with the correct email and password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
             email = "km8003296@gmail.com",
             password = "kamilmalik"

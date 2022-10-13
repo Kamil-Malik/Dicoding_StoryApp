@@ -50,7 +50,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `Failed to get all stories with location due to invalid token`() = runTest {
+    fun `Failed to get story list due to wrong token`() = runTest {
         val actualResult = repository.getAllStoriesWithLocation("token_salah")
         `when`(fakeRepository.getAllStoriesWithLocation(null)).thenReturn(actualResult)
         mainViewModel.getAllStoriesWithLocation()
@@ -58,7 +58,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `Success to get all stories with location`() = runTest {
+    fun `Managed to get the whole story with location`() = runTest {
         val actualResult = repository.getAllStoriesWithLocation(Requirement.getToken())
         `when`(fakeRepository.getAllStoriesWithLocation(null)).thenReturn(actualResult)
         mainViewModel.getAllStoriesWithLocation()
@@ -66,7 +66,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `Success to get all stories with paging`() = runTest {
+    fun `Successfully got story by page`() = runTest {
         val actualResult = apiService.getStoriesWithPage(
             token = Requirement.getToken(),
             page = 1,
@@ -87,9 +87,7 @@ class MainViewModelTest {
         `when`(fakeRepository.getStoriesWithPagination(null))
             .thenReturn(testingLiveData as LiveData<PagingData<LocalStory>>)
         Assert.assertNotNull(testingLiveData)
-
-
-        differ.submitData(mainViewModel.stories.getOrAwaitValue())
+        differ.submitData(mainViewModel.getStoriesWithPage().getOrAwaitValue())
         Assert.assertNotNull(differ.snapshot())
         Assert.assertEquals(listStories.size, differ.snapshot().size)
         Assert.assertEquals(listStories, differ.snapshot())

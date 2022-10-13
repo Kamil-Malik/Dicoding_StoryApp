@@ -42,7 +42,7 @@ class AddStoryViewModelTest {
     }
 
     @Test
-    fun `Failed upload file because of empty description`() = runTest {
+    fun `Failed to upload due to empty description`() = runTest {
         val actualResult = repository.uploadStory(
             photo = photo,
             description = "",
@@ -65,7 +65,7 @@ class AddStoryViewModelTest {
     }
 
     @Test
-    fun `Successful Upload Image without any location`() = runTest {
+    fun `Successfully upload image without location`() = runTest {
         val actualResult = repository.uploadStory(
             photo = photo,
             description = "Unit Test ViewModel",
