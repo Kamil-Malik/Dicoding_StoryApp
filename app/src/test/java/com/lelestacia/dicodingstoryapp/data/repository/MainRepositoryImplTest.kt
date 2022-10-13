@@ -2,26 +2,22 @@ package com.lelestacia.dicodingstoryapp.data.repository
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.AsyncPagingDataDiffer
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.google.android.gms.maps.model.LatLng
-import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
+import com.lelestacia.dicodingstoryapp.ui.main_activity.StoryPagingAdapter
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import com.lelestacia.dicodingstoryapp.utility.Requirement
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
 import org.junit.*
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -33,8 +29,6 @@ class MainRepositoryImplTest {
     private lateinit var apiService: DicodingAPI
     private lateinit var repository: MainRepositoryImpl
     private lateinit var photo: File
-    private val token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTZ4dFRiWmt5Tk5tem5zN1AiLCJpYXQiOjE2NjI4MTA3MzZ9.DYfer_Yv5Lqs-UQMuMD2Vh-NimOhWQDjYdZLp-E0nXc"
-    private val dispatcher = StandardTestDispatcher()
 
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
@@ -48,29 +42,18 @@ class MainRepositoryImplTest {
         database = Module.getDatabase()
         apiService = Module.getRetrofit()
         repository = MainRepositoryImpl(apiService, context, database)
-        val f = File("test-File")
-        val inputStream: InputStream = context.resources.openRawResource(R.drawable.foto_twrp)
-        val out: OutputStream = FileOutputStream(f)
-        val buf = ByteArray(1024)
-        var len: Int
-        while (inputStream.read(buf).also { len = it } > 0) out.write(buf, 0, len)
-        out.close()
-        inputStream.close()
-        photo = f
-        Dispatchers.setMain(dispatcher)
+        photo = Requirement.getPhoto()
     }
 
     @After
     fun tearDown() {
         database.close()
-        Dispatchers.resetMain()
     }
 
     @Test
     fun `Failed login because wrong Email or Password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
-            email = "km8003296@gmail.com",
-            password = "kamil"
+            email = "km8003296@gmail.com", password = "kamil"
         )
         Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
@@ -78,14 +61,15 @@ class MainRepositoryImplTest {
     @Test
     fun `Failed login because of empty email or password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword("", "")
-        Assert.assertTrue("This test should failed with Generic Exception",actualResult is NetworkResponse.GenericException)
+        Assert.assertTrue(
+            actualResult is NetworkResponse.GenericException
+        )
     }
 
     @Test
     fun `Successful login with correct Email and Password`() = runTest {
         val actualResult = repository.signInWithEmailAndPassword(
-            email = "km8003296@gmail.com",
-            password = "kamilmalik"
+            email = "km8003296@gmail.com", password = "kamilmalik"
         )
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
@@ -93,9 +77,7 @@ class MainRepositoryImplTest {
     @Test
     fun `Failed Registration`() = runTest {
         val actualResult = repository.signUpUserWithEmailAndPassword(
-            name = "kamil",
-            email = "km8003296@gmail.com",
-            password = "kamilmalik"
+            name = "kamil", email = "km8003296@gmail.com", password = "kamilmalik"
         )
         Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
@@ -105,27 +87,41 @@ class MainRepositoryImplTest {
         val randomString = java.util.UUID.randomUUID().toString()
         val actualResult = repository.signUpUserWithEmailAndPassword(
             name = "kamil",
-            email = "$randomString@gmail.com",
+            email = "$randomString@ymail.com",
             password = "kamilmalik"
         )
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
+    fun `Failed get all stories with Location`() = runTest {
+        val actualResult = repository.getAllStoriesWithLocation(token = "token_salah")
+        Assert.assertTrue(actualResult is NetworkResponse.GenericException)
+    }
+
+    @Test
     fun `Successful get all stories with Location`() = runTest {
-        val actualResult = repository.getAllStoriesWithLocation(token)
+        val actualResult = repository.getAllStoriesWithLocation(Requirement.getToken())
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
     @Test
     fun `Failed Uploading file because of empty description`() = runTest {
-        val actualResult = repository.uploadStory(photo, "", token)
+        val actualResult = repository.uploadStory(
+            photo = photo,
+            description = "",
+            token = Requirement.getToken()
+        )
         Assert.assertTrue(actualResult is NetworkResponse.GenericException)
     }
 
     @Test
     fun `Successful Upload Image without any location`() = runTest {
-        val actualResult = repository.uploadStory(photo, "Unit Test", token)
+        val actualResult = repository.uploadStory(
+            photo = photo,
+            description = "Unit Test",
+            token = Requirement.getToken()
+        )
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
@@ -133,27 +129,26 @@ class MainRepositoryImplTest {
     fun `Successful upload Image with location`() = runTest {
         val position = LatLng(-1.6128372919924492, 103.53365088692506)
         val actualResult = repository.uploadStory(
-            photo,
-            "Unit Test with Location",
-            position.latitude.toFloat(),
-            position.longitude.toFloat(),
-            token
+            photo = photo,
+            description = "Unit Test with Location",
+            lat = position.latitude.toFloat(),
+            long = position.longitude.toFloat(),
+            token = Requirement.getToken()
         )
         Assert.assertTrue(actualResult is NetworkResponse.Success)
     }
 
-//    @Test
-//    fun `Paging3 Test`() = runTest {
-//        val actualResult = repository.getStoriesWithPagination(token).getOrAwaitValue()
-//        val differ = AsyncPagingDataDiffer(
-//            diffCallback = StoryPagingAdapter.DIFF_CALLBACK,
-//            updateCallback = noopListUpdateCallback,
-//            workerDispatcher = UnconfinedTestDispatcher(),
-//        )
-//        differ.submitData(actualResult)
-//        Assert.assertNotNull(differ.snapshot())
-//        Assert.assertEquals(actualResult, differ.snapshot())
-//    }
+    @Test
+    fun `Paging3 Test`() = runTest {
+        val actualResult = repository.getStoriesWithPagination(Requirement.getToken())
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = StoryPagingAdapter.DIFF_CALLBACK,
+            updateCallback = noopListUpdateCallback,
+            mainDispatcher = Dispatchers.Main
+        )
+        Assert.assertNotNull(differ.snapshot())
+        Assert.assertEquals(actualResult.getOrAwaitValue(), differ.snapshot())
+    }
 
     private val noopListUpdateCallback = object : ListUpdateCallback {
         override fun onInserted(position: Int, count: Int) {}

@@ -34,13 +34,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 is NetworkResponse.Loading -> {
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                         .hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-                    binding.layoutLoading.root.visibility = View.VISIBLE
-                    binding.btnLogin.visibility = View.GONE
+                    binding.apply {
+                        layoutLoading.root.visibility = View.VISIBLE
+                        btnLogin.visibility = View.GONE
+                    }
                 }
                 is NetworkResponse.Success -> return@observe
                 else -> {
-                    binding.btnLogin.visibility = View.VISIBLE
-                    binding.layoutLoading.root.visibility = View.GONE
+                    binding.apply {
+                        btnLogin.visibility = View.VISIBLE
+                        layoutLoading.root.visibility = View.GONE
+                    }
                 }
             }
         }

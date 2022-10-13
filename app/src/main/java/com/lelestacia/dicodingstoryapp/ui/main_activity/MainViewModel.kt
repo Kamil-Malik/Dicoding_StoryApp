@@ -5,13 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,13 +26,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun getAllStoriesWithLocation() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _storiesWithLocation.postValue(repository.getAllStoriesWithLocation(null))
+        viewModelScope.launch {
+            _storiesWithLocation.value = repository.getAllStoriesWithLocation(null)
         }
     }
 
     val stories: LiveData<PagingData<LocalStory>> =
-        repository.getStoriesWithPagination(null).cachedIn(viewModelScope)
+        repository.getStoriesWithPagination(null)
 
     val isUpdated = repository.isUpdated()
 }

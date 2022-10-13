@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -32,10 +33,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.TimeZone
+import java.util.*
 
-
-class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, GoogleMap.OnMarkerClickListener {
+class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks,
+    GoogleMap.OnMarkerClickListener {
 
     private val currentLocation =
         MutableLiveData<LatLng>()
@@ -57,28 +58,69 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, GoogleMap.
                     with(it.data.listNetworkStory) {
                         this.forEach { story ->
                             lifecycleScope.launch(Dispatchers.IO) {
-                                val bmp =
-                                    Glide.with(this@MapsFragment)
-                                        .asBitmap()
-                                        .circleCrop()
-                                        .load(story.photoUrl)
-                                        .submit().get()
+                                try {
+                                    val bmp =
+                                        Glide.with(requireContext())
+                                            .asBitmap()
+                                            .circleCrop()
+                                            .load(story.photoUrl)
+                                            .error(R.drawable.ic_broken_image)
+                                            .submit().get()
 
-                                withContext(Dispatchers.Main) {
-                                    googleMap.addMarker(
-                                        MarkerOptions()
-                                            .position(LatLng(story.lat, story.lon))
-                                            .title(story.name)
-                                            .snippet(DateFormatter.formatDate(story.createdAt, TimeZone.getDefault().id))
-                                            .icon(BitmapDescriptorFactory
-                                                .fromBitmap(Bitmap.createScaledBitmap(bmp, 100,100,false)))
-                                    )
+                                    withContext(Dispatchers.Main) {
+                                        googleMap.addMarker(
+                                            MarkerOptions()
+                                                .position(LatLng(story.lat, story.lon))
+                                                .title(story.name)
+                                                .snippet(
+                                                    DateFormatter.formatDate(
+                                                        story.createdAt,
+                                                        TimeZone.getDefault().id
+                                                    )
+                                                )
+                                                .icon(
+                                                    BitmapDescriptorFactory
+                                                        .fromBitmap(
+                                                            Bitmap.createScaledBitmap(
+                                                                bmp,
+                                                                100,
+                                                                100,
+                                                                false
+                                                            )
+                                                        )
+                                                )
+                                        )
+                                    }
+                                } catch (e: Exception) {
+                                    withContext(Dispatchers.Main) {
+                                        val icon = resources.getDrawable(R.drawable.ic_broken_image)
+                                            .toBitmap(100, 100, null)
+                                        googleMap.addMarker(
+                                            MarkerOptions()
+                                                .position(LatLng(story.lat, story.lon))
+                                                .title(story.name)
+                                                .snippet(
+                                                    DateFormatter.formatDate(
+                                                        story.createdAt,
+                                                        TimeZone.getDefault().id
+                                                    )
+                                                )
+                                                .icon( BitmapDescriptorFactory
+                                                    .fromBitmap(icon)))
+                                    }
                                 }
                             }
                         }
                     }
                 }
                 else -> return@observe
+            }
+        }
+
+        viewModel.isUpdated.observe(viewLifecycleOwner){
+            when(it){
+                true -> viewModel.getAllStoriesWithLocation()
+                false -> return@observe
             }
         }
 
@@ -161,10 +203,19 @@ class MapsFragment : Fragment(), EasyPermissions.PermissionCallbacks, GoogleMap.
     override fun onMarkerClick(mark: Marker): Boolean {
         val markerData = viewModel.storiesWithLocation.value
         if (markerData is NetworkResponse.Success) {
-            val selectedMarker = markerData.data.listNetworkStory.first { it.name == mark.title &&
-                    DateFormatter.formatDate(it.createdAt, TimeZone.getDefault().id) == mark.snippet}
-            startActivity(Intent(requireContext(), DetailActivity::class.java).putExtra(Utility.STORY,
-                DataMapper.mapStory(selectedMarker)))
+            val selectedMarker = markerData.data.listNetworkStory.first {
+                it.name == mark.title &&
+                        DateFormatter.formatDate(
+                            it.createdAt,
+                            TimeZone.getDefault().id
+                        ) == mark.snippet
+            }
+            startActivity(
+                Intent(requireContext(), DetailActivity::class.java).putExtra(
+                    Utility.STORY,
+                    DataMapper.mapStory(selectedMarker)
+                )
+            )
         }
         return true
     }

@@ -8,8 +8,6 @@ import com.lelestacia.dicodingstoryapp.data.model.network.LoginResponse
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,18 +20,9 @@ class LoginViewModel @Inject constructor(
     val loginInfo: LiveData<NetworkResponse<LoginResponse>> get() = _loginInfo
 
     fun signInWithEmailAndPassword(email: String, password: String) {
-        _loginInfo.value = NetworkResponse.Loading
         viewModelScope.launch{
+            _loginInfo.value = NetworkResponse.Loading
             _loginInfo.value = repository.signInWithEmailAndPassword(email, password)
         }
-
-//        viewModelScope.launch(Dispatchers.IO) {
-//            _loginInfo.postValue(
-//                repository.signInWithEmailAndPassword(
-//                    email = email,
-//                    password = password
-//                )
-//            )
-//        }
     }
 }

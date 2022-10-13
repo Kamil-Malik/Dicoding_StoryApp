@@ -8,7 +8,6 @@ import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterRes
 import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -23,13 +22,15 @@ class AddStoryViewModel @Inject constructor(
 
     fun uploadStory(file: File, description: String) {
         _uploadStatus.value = NetworkResponse.Loading
-        viewModelScope.launch(Dispatchers.IO)
-        { _uploadStatus.postValue(repository.uploadStory(file, description, null)) }
+        viewModelScope.launch{
+            _uploadStatus.value = repository.uploadStory(file, description, null)
+        }
     }
 
     fun uploadStory(file: File, description: String, lat: Float, lon: Float) {
         _uploadStatus.value = NetworkResponse.Loading
-        viewModelScope.launch(Dispatchers.IO)
-        { _uploadStatus.postValue(repository.uploadStory(file, description, lat, lon, null)) }
+        viewModelScope.launch {
+            _uploadStatus.value = repository.uploadStory(file, description, lat, lon, null)
+        }
     }
 }

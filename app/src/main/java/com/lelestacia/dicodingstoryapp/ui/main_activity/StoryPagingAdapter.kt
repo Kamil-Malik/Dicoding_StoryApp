@@ -12,6 +12,8 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
 import com.lelestacia.dicodingstoryapp.databinding.StoryItemBinding
 import com.lelestacia.dicodingstoryapp.ui.detail_activity.DetailActivity
@@ -42,6 +44,8 @@ class StoryPagingAdapter :
                 Glide.with(this.root.context)
                     .load(item.photoUrl)
                     .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                    .error(R.drawable.ic_broken_image)
                     .into(ivPhoto)
                 tvTitle.text = item.name
                 tvUploadeDate.text = DateFormatter.formatDate(item.createdAt, TimeZone.getDefault().id)

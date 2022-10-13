@@ -3,24 +3,22 @@ package com.lelestacia.dicodingstoryapp.ui.add_story_activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.android.gms.maps.model.LatLng
-import com.lelestacia.dicodingstoryapp.R
-import com.lelestacia.dicodingstoryapp.data.repository.getOrAwaitValue
+import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterResponse
+import com.lelestacia.dicodingstoryapp.data.repository.MainRepository
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
+import com.lelestacia.dicodingstoryapp.utility.Requirement
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -32,56 +30,93 @@ class AddStoryViewModelTest {
 
     private lateinit var addStoryViewModel: AddStoryViewModel
     private lateinit var photo: File
-    private lateinit var testDispatcher: TestDispatcher
-    private val token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTZ4dFRiWmt5Tk5tem5zN1AiLCJpYXQiOjE2NjI4MTA3MzZ9.DYfer_Yv5Lqs-UQMuMD2Vh-NimOhWQDjYdZLp-E0nXc"
+    private lateinit var repository: MainRepository
+    private lateinit var fakeRepository: MainRepository
 
     @Before
     fun setup() {
-        addStoryViewModel = AddStoryViewModel(Module.getRepository())
-        val f = File("test-File")
-        val inputStream: InputStream = Module.getContext().resources.openRawResource(R.drawable.foto_twrp)
-        val out: OutputStream = FileOutputStream(f)
-        val buf = ByteArray(1024)
-        var len: Int
-        while (inputStream.read(buf).also { len = it } > 0) out.write(buf, 0, len)
-        out.close()
-        inputStream.close()
-        photo = f
+        photo = Requirement.getPhoto()
+        repository = Module.getRepository()
+        fakeRepository = Mockito.mock(MainRepository::class.java)
+        addStoryViewModel = AddStoryViewModel(fakeRepository)
     }
 
     @Test
-    fun `Failed Uploading file because of empty description`() = runTest {
+    fun `Failed upload file because of empty description`() = runTest {
+        val actualResult = repository.uploadStory(
+            photo = photo,
+            description = "",
+            token = Requirement.getToken()
+        )
+        `when`(
+            fakeRepository.uploadStory(
+                photo = photo,
+                description = "",
+                token = null
+            )
+        ).thenReturn(actualResult)
+        val listResult = arrayListOf<NetworkResponse<AddStoryAndRegisterResponse>>()
+        addStoryViewModel.uploadStatus.observeForever {
+            listResult.add(it)
+        }
         addStoryViewModel.uploadStory(photo, "")
-        Assert.assertTrue(addStoryViewModel.uploadStatus.value is NetworkResponse.Loading)
+        Assert.assertEquals(listResult[0], NetworkResponse.Loading)
+        Assert.assertEquals(listResult[1], actualResult)
     }
 
     @Test
-    fun `Successfully Upload Image without any location`() = runTest {
-        val expectedResult = false
-        addStoryViewModel.uploadStory(photo, "unit-testing")
-        val actualResult = addStoryViewModel.uploadStatus.getOrAwaitValue()
-        assertEquals(NetworkResponse.Loading, actualResult)
-//        if (actualResult is NetworkResponse.Success)
-//            assertEquals(expectedResult, actualResult.data.error)
+    fun `Successful Upload Image without any location`() = runTest {
+        val actualResult = repository.uploadStory(
+            photo = photo,
+            description = "Unit Test ViewModel",
+            token = Requirement.getToken()
+        )
+        `when`(
+            fakeRepository.uploadStory(
+                photo = photo,
+                description = "Unit Test ViewModel",
+                token = null
+            )
+        ).thenReturn(actualResult)
+        val listResult = arrayListOf<NetworkResponse<AddStoryAndRegisterResponse>>()
+        addStoryViewModel.uploadStatus.observeForever {
+            listResult.add(it)
+        }
+        addStoryViewModel.uploadStory(photo, "Unit Test ViewModel")
+        Assert.assertEquals(listResult[0], NetworkResponse.Loading)
+        Assert.assertEquals(listResult[1], actualResult)
     }
 
     @Test
-    fun `Successfully upload Image with location`() = runTest {
+    fun `Successful upload Image with location`() = runTest {
         val position = LatLng(-1.6128372919924492, 103.53365088692506)
-        val expectedResult = false
+        val actualResult = repository.uploadStory(
+            photo = photo,
+            description = "Unit Test with Location",
+            lat = position.latitude.toFloat(),
+            long = position.longitude.toFloat(),
+            token = Requirement.getToken()
+        )
+        `when`(
+            fakeRepository.uploadStory(
+                photo = photo,
+                description = "Unit Test with Location ViewModel",
+                lat = position.latitude.toFloat(),
+                long = position.longitude.toFloat(),
+                token = null
+            )
+        ).thenReturn(actualResult)
+        val listResult = arrayListOf<NetworkResponse<AddStoryAndRegisterResponse>>()
+        addStoryViewModel.uploadStatus.observeForever {
+            listResult.add(it)
+        }
         addStoryViewModel.uploadStory(
             photo,
-            "unit-testing",
+            "Unit Test with Location ViewModel",
             position.latitude.toFloat(),
             position.longitude.toFloat()
         )
-        val actualResult = addStoryViewModel.uploadStatus.getOrAwaitValue()
-        assertEquals("Response Error should be false", expectedResult, actualResult)
-//        assertEquals(NetworkResponse.Loading, actualResult)
-//        if (actualResult !is  NetworkResponse.Loading) {
-//            println(actualResult)
-//            if (actualResult is NetworkResponse.GenericException)
-//                assertEquals(2000, actualResult.code)
-//        }
+        Assert.assertEquals(listResult[0], NetworkResponse.Loading)
+        Assert.assertEquals(listResult[1], actualResult)
     }
 }
