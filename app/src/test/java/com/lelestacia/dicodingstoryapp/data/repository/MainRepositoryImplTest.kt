@@ -2,11 +2,16 @@ package com.lelestacia.dicodingstoryapp.data.repository
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.AsyncPagingDataDiffer
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.google.android.gms.maps.model.LatLng
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
+import com.lelestacia.dicodingstoryapp.data.model.mapper.DataMapper
 import com.lelestacia.dicodingstoryapp.ui.main_activity.StoryPagingAdapter
 import com.lelestacia.dicodingstoryapp.utility.Module
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
@@ -16,6 +21,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.robolectric.RobolectricTestRunner
 import java.io.File
 
@@ -139,22 +146,32 @@ class MainRepositoryImplTest {
     }
 
     @Test
-    fun `Paging3 Test`() = runTest {
-        val actualResult = repository.getStoriesWithPagination(Requirement.getToken())
+    fun `Successfully get all stories with page`() = runTest {
+        val fakeRepository = Mockito.mock(MainRepository::class.java)
+        val actualStory = apiService.getStoriesWithPage(
+            token = Requirement.getToken(),
+            page = 1,
+            size = 10
+        )
+        val listStories = arrayListOf<LocalStory>()
+        actualStory.listNetworkStory.forEach {
+            listStories.add(DataMapper.mapStory(it))
+        }
+        val dummy = StoryPagingSourceTest.snapshot(listStories)
+        val testingLiveData = MutableLiveData<PagingData<LocalStory>>()
+        testingLiveData.value = dummy
+        `when`(fakeRepository.getStoriesWithPagination("test_token")).thenReturn(testingLiveData as LiveData<PagingData<LocalStory>>)
+        val actualResult = fakeRepository.getStoriesWithPagination("test_token")
         val differ = AsyncPagingDataDiffer(
             diffCallback = StoryPagingAdapter.DIFF_CALLBACK,
-            updateCallback = noopListUpdateCallback,
+            updateCallback = Module.noopListUpdateCallback,
             mainDispatcher = Dispatchers.Main
         )
+        differ.submitData(actualResult.getOrAwaitValue())
         Assert.assertNotNull(differ.snapshot())
-        Assert.assertEquals(actualResult.getOrAwaitValue(), differ.snapshot())
-    }
-
-    private val noopListUpdateCallback = object : ListUpdateCallback {
-        override fun onInserted(position: Int, count: Int) {}
-        override fun onRemoved(position: Int, count: Int) {}
-        override fun onMoved(fromPosition: Int, toPosition: Int) {}
-        override fun onChanged(position: Int, count: Int, payload: Any?) {}
+        Assert.assertEquals(listStories.size, differ.snapshot().size)
+        Assert.assertEquals(listStories, differ.snapshot())
+        Assert.assertEquals(listStories[0], differ.snapshot()[0])
     }
 }
 

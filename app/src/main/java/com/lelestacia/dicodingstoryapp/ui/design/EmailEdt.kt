@@ -34,7 +34,7 @@ class EmailEdt : AppCompatEditText {
         lengthAfter: Int
     ) {
         when {
-            (!Patterns.EMAIL_ADDRESS.matcher((text ?: "")).matches() && (text ?: "").isNotEmpty()) ->
+            (!Patterns.EMAIL_ADDRESS.matcher(text ?: "").matches() && (text ?: "").isNotEmpty()) ->
                 error = resources.getString(R.string.invalid_email)
         }
         super.onTextChanged(text, start, lengthBefore, lengthAfter)

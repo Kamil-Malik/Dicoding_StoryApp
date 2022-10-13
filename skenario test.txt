@@ -9,6 +9,7 @@ Skenario test untuk repository :
 - Gagal mengupload cerita karena deskripsi kosong
 - Berhasil mengupload cerita tanpa lokasi
 - Berhasil mengupload cerita dengan lokasi
+- Berhasil mendapatkan paging story
 
 Skenario test untuk login ViewModel :
 - Gagal login karena email/password salah

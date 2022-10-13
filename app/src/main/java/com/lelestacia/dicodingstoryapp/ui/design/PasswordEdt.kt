@@ -29,8 +29,9 @@ class PasswordEdt : AppCompatEditText {
         lengthBefore: Int,
         lengthAfter: Int
     ) {
-        when {
-            (text?.length ?: 0 ) > 0 && (text?.length ?: 0) < 6 -> error = resources.getString(R.string.empty_password)
+        when (text?.length ?: 0) {
+            in 1..5 -> error =
+                resources.getString(R.string.empty_password)
         }
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
     }

@@ -1,6 +1,7 @@
 package com.lelestacia.dicodingstoryapp.utility
 
 import android.content.Context
+import androidx.recyclerview.widget.ListUpdateCallback
 import androidx.room.Room
 import com.lelestacia.dicodingstoryapp.data.api.DicodingAPI
 import com.lelestacia.dicodingstoryapp.data.database.StoryDatabase
@@ -39,5 +40,12 @@ object Module {
             getContext(),
             getDatabase()
         )
+    }
+
+    val noopListUpdateCallback = object : ListUpdateCallback {
+        override fun onInserted(position: Int, count: Int) {}
+        override fun onRemoved(position: Int, count: Int) {}
+        override fun onMoved(fromPosition: Int, toPosition: Int) {}
+        override fun onChanged(position: Int, count: Int, payload: Any?) {}
     }
 }
