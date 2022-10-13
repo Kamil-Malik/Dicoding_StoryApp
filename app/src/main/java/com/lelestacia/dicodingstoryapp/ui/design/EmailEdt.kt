@@ -35,7 +35,7 @@ class EmailEdt : AppCompatEditText {
     ) {
         val currentText = text ?: ""
         when {
-            (!Patterns.EMAIL_ADDRESS.matcher(currentText).matches() && currentText.isNotEmpty()) ->
+            !Patterns.EMAIL_ADDRESS.matcher(currentText).matches() && currentText.isNotEmpty() ->
                 error = resources.getString(R.string.invalid_email)
         }
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
