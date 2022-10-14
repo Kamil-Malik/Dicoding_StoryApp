@@ -1,7 +1,9 @@
 package com.lelestacia.dicodingstoryapp.ui.register_activity
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -59,6 +61,8 @@ class RegisterActivity : AppCompatActivity(), View.OnClickListener {
         viewModel.registerInformation.observe(this) {
             when (it) {
                 NetworkResponse.Loading -> binding.apply {
+                    (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+                        .hideSoftInputFromWindow(currentFocus?.windowToken, 0)
                     layoutLoading.root.visibility = View.VISIBLE
                     btnRegister.visibility = View.GONE
                 }

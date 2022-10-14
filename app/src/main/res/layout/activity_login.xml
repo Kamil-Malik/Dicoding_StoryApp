@@ -82,7 +82,7 @@
         android:text="@string/login"
         android:textColor="@color/white"
         android:textSize="15sp"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="?attr/tabBackground"
         app:cornerRadius="25dp"
         app:layout_constraintEnd_toEndOf="@+id/edtPassword"
         app:layout_constraintStart_toStartOf="@+id/edtPassword"

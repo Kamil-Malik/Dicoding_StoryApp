@@ -3,7 +3,7 @@
     <string name="have_no_account">Have no account?</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="upload_photo">Upload Photo</string>
-    <string name="insert_description">Insert description</string>
+
     <string name="welcome_message">Welcome %1$d</string>
     <string name="uploaded_at">Uploaded at %1$s</string>
     <string name="choose_picture">Please choose a picture</string>
@@ -16,6 +16,9 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
+    <string name="stories">Stories</string>
+    <string name="map">Map</string>
+    <string name="include_location">Include current Location?</string>
 
     <!--  Guide  -->
     <string name="please_register_to_continue">Please Register to Continue</string>
@@ -23,6 +26,11 @@
     <string name="please_input_your_username">Please input your username</string>
     <string name="please_input_your_email">Please Input Your Email</string>
     <string name="please_input_your_password">Please input your password</string>
+    <string name="need_camera_permission">This feature require access to Camera</string>
+    <string name="need_gallery_permission">This feature require access to Gallery</string>
+    <string name="need_location_permission">This feature require access to Location</string>
+    <string name="insert_description">Insert description</string>
+    <string name="complete_everything">Please complete everything before uploading</string>
 
     <!--  Error  -->
     <string name="empty_username">Username cannot be empty</string>
@@ -37,8 +45,13 @@
     <string name="permission_denied">Please grant permission to continue</string>
     <string name="error_camera">Failed to capture image</string>
     <string name="error_launch_camera">Failed to launch Camera</string>
+    <string name="error_loading">Retry</string>
+
 
     <string name="transition_photo" translatable="false">transition_photo</string>
     <string name="transition_title" translatable="false">transition_title</string>
     <string name="transition_description" translatable="false">transition_description</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="map_id" translatable="false">b7c57c5f99bcb2da</string>
 </resources>

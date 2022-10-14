@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".application.MyApp"
@@ -19,6 +23,28 @@
         android:theme="@style/Theme.DicodingStoryApp"
         tools:targetApi="31">
 
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB7ycEInUGpOE4GDdUEa-vAnsEQDQEvN9E" />
+
+        <activity
+            android:name=".ui.main_activity.MainActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".ui.add_story_activity.AddStoryActivity"
             android:exported="false" />
@@ -27,9 +53,6 @@
             android:exported="false" />
         <activity
             android:name=".ui.detail_activity.DetailActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.stories_activity.StoriesActivity"
             android:exported="false" />
         <activity
             android:name=".ui.register_activity.RegisterActivity"
@@ -50,4 +73,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

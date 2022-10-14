@@ -1,0 +1,26 @@
+Skenario test untuk repository :
+- Gagal login karena email/password salah
+- Gagal login karena email/password kosong
+- Berhasil login
+- Gagal registrasi
+- Berhasil registrasi
+- Gagal mendapatkan seluruh cerita dengan lokasi karena token yang salah
+- Berhasil mendapatkan seluruh cerita dengan lokasi
+- Gagal mengupload cerita karena deskripsi kosong
+- Berhasil mengupload cerita tanpa lokasi
+- Berhasil mengupload cerita dengan lokasi
+- Berhasil mendapatkan paging story
+
+Skenario test untuk login ViewModel :
+- Gagal login karena email/password salah
+- Gagal login karena email/password kosong
+- Berhasil login
+
+Skenario test untuk AddStory ViewModel :
+- Gagal upload karena deskripsi kosong
+- Berhasil upload tanpa lokasi
+- Berhasil upload dengan lokasi
+
+Skenario test untuk Register ViewModel :
+- Gagal register
+- Berhasil Register

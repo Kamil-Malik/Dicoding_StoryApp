@@ -10,8 +10,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.databinding.ActivityLoginBinding
+import com.lelestacia.dicodingstoryapp.ui.main_activity.MainActivity
 import com.lelestacia.dicodingstoryapp.ui.register_activity.RegisterActivity
-import com.lelestacia.dicodingstoryapp.ui.stories_activity.StoriesActivity
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,13 +34,17 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 is NetworkResponse.Loading -> {
                     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                         .hideSoftInputFromWindow(currentFocus?.windowToken, 0)
-                    binding.layoutLoading.root.visibility = View.VISIBLE
-                    binding.btnLogin.visibility = View.GONE
+                    binding.apply {
+                        layoutLoading.root.visibility = View.VISIBLE
+                        btnLogin.visibility = View.GONE
+                    }
                 }
                 is NetworkResponse.Success -> return@observe
                 else -> {
-                    binding.btnLogin.visibility = View.VISIBLE
-                    binding.layoutLoading.root.visibility = View.GONE
+                    binding.apply {
+                        btnLogin.visibility = View.VISIBLE
+                        layoutLoading.root.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -57,7 +61,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     resources.getString(R.string.error_network),
                     Toast.LENGTH_SHORT
                 ).show()
-                is NetworkResponse.Success -> startActivity(Intent(this, StoriesActivity::class.java))
+                is NetworkResponse.Success -> startActivity(Intent(this, MainActivity::class.java))
                     .also { finish() }
                 else -> return@observe
             }
@@ -70,7 +74,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun signInWithEmailAndPassword(email: String, password: String) {
-        if (binding.edtEmail.error.isEmpty() && binding.edtPassword.error.isEmpty())
+        if (binding.edtEmail.error.isNullOrEmpty() && binding.edtPassword.error.isNullOrEmpty())
             viewModel.signInWithEmailAndPassword(email, password)
     }
 

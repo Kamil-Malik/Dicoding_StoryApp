@@ -1,4 +1,4 @@
-package com.lelestacia.dicodingstoryapp.data.model
+package com.lelestacia.dicodingstoryapp.data.model.network
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -13,5 +13,5 @@ data class LoginResult(
     val userId: String,
 
     @field:SerializedName("token")
-    val token: String
+    var token: String
 ) : Parcelable

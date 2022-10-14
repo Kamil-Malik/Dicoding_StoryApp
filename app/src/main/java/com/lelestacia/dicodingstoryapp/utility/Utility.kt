@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
+import androidx.annotation.StringRes
 import com.lelestacia.dicodingstoryapp.R
 import java.io.File
 import java.io.FileOutputStream
@@ -81,5 +82,10 @@ class Utility {
         const val USER_ID = "user_id"
         const val STORY = "story"
         const val DARK_MODE = "dark_mode"
+        @StringRes
+        val TAB_TITLES = intArrayOf(
+            R.string.map,
+            R.string.stories
+        )
     }
 }

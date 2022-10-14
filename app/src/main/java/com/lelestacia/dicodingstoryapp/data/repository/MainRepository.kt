@@ -1,9 +1,11 @@
 package com.lelestacia.dicodingstoryapp.data.repository
 
 import androidx.lifecycle.LiveData
-import com.lelestacia.dicodingstoryapp.data.model.AddStoryAndRegisterResponse
-import com.lelestacia.dicodingstoryapp.data.model.GetStoriesResponse
-import com.lelestacia.dicodingstoryapp.data.model.LoginResponse
+import androidx.paging.PagingData
+import com.lelestacia.dicodingstoryapp.data.model.local.LocalStory
+import com.lelestacia.dicodingstoryapp.data.model.network.AddStoryAndRegisterResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.GetStoriesResponse
+import com.lelestacia.dicodingstoryapp.data.model.network.LoginResponse
 import com.lelestacia.dicodingstoryapp.utility.NetworkResponse
 import java.io.File
 
@@ -19,9 +21,15 @@ interface MainRepository {
         password: String
     ): NetworkResponse<LoginResponse>
 
-    suspend fun getAllStories(): NetworkResponse<GetStoriesResponse>
+    fun getStoriesWithPagination(token: String?) : LiveData<PagingData<LocalStory>>
 
-    suspend fun uploadStory(photo: File, description: String) : NetworkResponse<AddStoryAndRegisterResponse>
+    fun update()
+
+    suspend fun getAllStoriesWithLocation(token: String?) : NetworkResponse<GetStoriesResponse>
+
+    suspend fun uploadStory(photo: File, description: String, token: String?) : NetworkResponse<AddStoryAndRegisterResponse>
+
+    suspend fun uploadStory(photo: File, description: String, lat: Float, long: Float, token: String?) : NetworkResponse<AddStoryAndRegisterResponse>
 
     fun isUpdated() : LiveData<Boolean>
 }

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.lelestacia.dicodingstoryapp.R
 import com.lelestacia.dicodingstoryapp.ui.login_activity.LoginActivity
-import com.lelestacia.dicodingstoryapp.ui.stories_activity.StoriesActivity
+import com.lelestacia.dicodingstoryapp.ui.main_activity.MainActivity
 import com.lelestacia.dicodingstoryapp.utility.Utility
 import kotlinx.coroutines.delay
 
@@ -24,7 +24,7 @@ class CustomSplashActivity : AppCompatActivity() {
         lifecycleScope.launchWhenCreated {
             delay(1500)
             if (userToken.isNotEmpty())
-                startActivity(Intent(this@CustomSplashActivity, StoriesActivity::class.java))
+                startActivity(Intent(this@CustomSplashActivity, MainActivity::class.java))
                     .also { finish() }
             else
                 startActivity(Intent(this@CustomSplashActivity, LoginActivity::class.java))
